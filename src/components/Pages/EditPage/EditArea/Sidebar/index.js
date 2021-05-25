@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { fabric } from 'fabric';
+import firebase from 'firebase';
+import {
+    uploadImageToStorage,
+    showData,
+    showUploadedImages,
+} from '../../../../../Utils/firebase';
 import * as SidebarImages from '../../../../../images/sidebarImages';
+
+//firebase part
+// import { firebaseConfig } from '../../../../../Utils/firebaseConfig';
+
+// firebase.initializeApp(firebaseConfig);
 
 const SidebarContainer = styled.div`
     display: flex;
@@ -82,14 +93,24 @@ const SidebarUploadLabel = styled.label`
     height: 30px;
     background-color: orange;
     color: black;
+
+    :hover {
+        cursor: pointer;
+    }
 `;
 
 const SidebarUpload = styled.input`
     display: none;
 `;
 
+const SidebarUploadedImagesContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
 const Sidebar = (props) => {
     const [activeSidebar, setActiveSidebar] = useState('');
+    const [uploadedImages, setUploadedImages] = useState([]);
     const sidebarItems = [
         {
             en: 'template',
@@ -176,6 +197,7 @@ const Sidebar = (props) => {
         });
         props.canvas.requestRenderAll();
     };
+
     const addTextToCanvas = (e) => {
         const targetIndex = e.target.dataset.index;
         const text = new fabric.IText(sidebarText[targetIndex].title, {
@@ -188,6 +210,19 @@ const Sidebar = (props) => {
         props.canvas.add(text);
         props.canvas.requestRenderAll();
     };
+
+    const handelUploadImageToStorage = (e) => {
+        const fileList = e.target.files;
+        uploadImageToStorage(fileList);
+    };
+
+    useEffect(() => {
+        showUploadedImages(setUploadedImages);
+    }, []);
+
+    useEffect(() => {
+        showUploadedImages(setUploadedImages);
+    }, [uploadedImages]);
 
     return (
         <SidebarContainer>
@@ -234,8 +269,23 @@ const Sidebar = (props) => {
                 <SidebarItemContainer>
                     <SidebarUploadLabel>
                         上傳圖片
-                        <SidebarUpload type="file"></SidebarUpload>
+                        <SidebarUpload
+                            type="file"
+                            onChange={handelUploadImageToStorage}
+                        ></SidebarUpload>
                     </SidebarUploadLabel>
+                    <SidebarUploadedImagesContainer>
+                        container
+                        {uploadedImages.length > 0
+                            ? uploadedImages.map((img) => (
+                                  <img
+                                      key={img.src}
+                                      src={img.src}
+                                      onClick={addImageToCanvas}
+                                  ></img>
+                              ))
+                            : null}
+                    </SidebarUploadedImagesContainer>
                 </SidebarItemContainer>
             ) : null}
         </SidebarContainer>
