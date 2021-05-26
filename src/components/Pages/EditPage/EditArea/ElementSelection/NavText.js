@@ -7,9 +7,19 @@ import 'fontfaceobserver';
 const TextAdjustmentContainer = styled.div`
     display: flex;
 `;
-const TextSelectSize = styled.select``;
+const TextSelectSize = styled.select`
+    height: 20px;
+`;
 
-const TextSelectFont = styled.select``;
+const TextSelectFont = styled.select`
+    height: 20px;
+`;
+
+const TextSelectColor = styled.div`
+    width: 20px;
+    height: 20px;
+    background-color: ${(props) => props.color};
+`;
 
 const NavText = (props) => {
     const textSize = [6, 8, 10, 12, 14, 16, 18, 20, 24, 36, 48, 72];
@@ -19,6 +29,9 @@ const NavText = (props) => {
         'Raleway',
         'Montserrat Alternates',
     ];
+
+    const [showColorPicker, setShowColorPicker] = useState(false);
+    const [chosenColor, setChosenColor] = useState('rgba(255, 255, 255, 1)');
     //set textFont
     // const preloadFont = () => {
     //     const FontFaceObserver = require('fontfaceobserver');
@@ -52,10 +65,16 @@ const NavText = (props) => {
     const changeTextColor = (color) => {
         console.log(color.rgb);
         if (props.canvas.getActiveObject()) {
-            const chosenColor = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+            setChosenColor(
+                `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`
+            );
             props.canvas.getActiveObject().set('fill', chosenColor);
             props.canvas.requestRenderAll();
         }
+    };
+
+    const handleShowColorPicker = () => {
+        setShowColorPicker(!showColorPicker);
     };
     return (
         <TextAdjustmentContainer>
@@ -71,7 +90,13 @@ const NavText = (props) => {
                     </option>
                 ))}
             </TextSelectFont>
-            <ChromePicker onChange={changeTextColor}></ChromePicker>
+            <TextSelectColor
+                color={chosenColor}
+                onClick={handleShowColorPicker}
+            ></TextSelectColor>
+            {showColorPicker ? (
+                <ChromePicker onChange={changeTextColor}></ChromePicker>
+            ) : null}
         </TextAdjustmentContainer>
     );
 };
