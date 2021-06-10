@@ -9,16 +9,25 @@ const TextAdjustmentContainer = styled.div`
 `;
 const TextSelectSize = styled.select`
     height: 20px;
+    margin-right: 20px;
 `;
 
 const TextSelectFont = styled.select`
     height: 20px;
+    margin-right: 20px;
 `;
 
 const TextSelectColor = styled.div`
     width: 20px;
     height: 20px;
-    background-color: ${(props) => props.color};
+    position: relative;
+    background-color: ${(props) =>
+        `rgba(
+            ${props.color.background.r},
+            ${props.color.background.g},
+            ${props.color.background.b},
+            ${props.color.background.a}
+        )`};
 `;
 
 const NavText = (props) => {
@@ -31,7 +40,15 @@ const NavText = (props) => {
     ];
 
     const [showColorPicker, setShowColorPicker] = useState(false);
-    const [chosenColor, setChosenColor] = useState('rgba(255, 255, 255, 1)');
+    // const [chosenColor, setChosenColor] = useState('rgba(255, 255, 255, 1)');
+    const [chosenColor, setChosenColor] = useState({
+        background: {
+            r: '0',
+            g: '0',
+            b: '0',
+            a: '1',
+        },
+    });
     //set textFont
     // const preloadFont = () => {
     //     const FontFaceObserver = require('fontfaceobserver');
@@ -65,10 +82,9 @@ const NavText = (props) => {
     const changeTextColor = (color) => {
         console.log(color.rgb);
         if (props.canvas.getActiveObject()) {
-            setChosenColor(
-                `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`
-            );
-            props.canvas.getActiveObject().set('fill', chosenColor);
+            const colorRgba = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+            setChosenColor({ background: colorRgba });
+            props.canvas.getActiveObject().set('fill', colorRgba);
             props.canvas.requestRenderAll();
         }
     };
@@ -76,6 +92,7 @@ const NavText = (props) => {
     const handleShowColorPicker = () => {
         setShowColorPicker(!showColorPicker);
     };
+
     return (
         <TextAdjustmentContainer>
             <TextSelectSize onChange={changeTextSize}>
@@ -93,10 +110,16 @@ const NavText = (props) => {
             <TextSelectColor
                 color={chosenColor}
                 onClick={handleShowColorPicker}
-            ></TextSelectColor>
-            {showColorPicker ? (
-                <ChromePicker onChange={changeTextColor}></ChromePicker>
-            ) : null}
+            >
+                {showColorPicker ? (
+                    <ChromePicker
+                        style={{ position: 'absolute', zIndex: 5 }}
+                        color={chosenColor.background}
+                        className="originalColorPicker"
+                        onChange={changeTextColor}
+                    ></ChromePicker>
+                ) : null}
+            </TextSelectColor>
         </TextAdjustmentContainer>
     );
 };

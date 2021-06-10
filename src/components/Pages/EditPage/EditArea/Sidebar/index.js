@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { fabric } from 'fabric';
+import { ChromePicker } from 'react-color';
 import firebase from 'firebase';
 import {
     uploadImageToStorage,
@@ -8,11 +9,8 @@ import {
     showUploadedImages,
 } from '../../../../../Utils/firebase';
 import * as SidebarImages from '../../../../../images/sidebarImages';
-
-//firebase part
-// import { firebaseConfig } from '../../../../../Utils/firebaseConfig';
-
-// firebase.initializeApp(firebaseConfig);
+import * as SidebarIcons from '../../../../../images/icons';
+import * as SidebarShapes from '../../../../../images/sidebarShapes';
 
 const SidebarContainer = styled.div`
     display: flex;
@@ -21,28 +19,39 @@ const SidebarContainer = styled.div`
 `;
 
 const SidebarItems = styled.div`
+    margin-top: 100px;
     display: flex;
     flex-direction: column;
     width: 50px;
-    height: 100vh;
+    height: calc(100vh - 100px);
 `;
 
 const SidebarItem = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 50px;
     height: 50px;
+    margin-bottom: 30px;
 
     :hover {
         color: white;
         cursor: pointer;
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(228deg)
+            brightness(103%) contrast(101%);
     }
+`;
+
+const SidebarItemIcon = styled.img`
+    width: 20px;
+    margin-bottom: 3px;
 `;
 
 const SidebarItemContainer = styled.div`
     margin-left: 20px;
     margin-right: 20px;
+    margin-top: 80px;
     width: 280px;
     display: flex;
     flex-direction: column;
@@ -73,11 +82,16 @@ const SidebarImgsContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin: 20px;
+    margin-top: 40px;
 `;
 
 const SidebarImgTitle = styled.div`
     width: 100%;
     display: flex;
+    color: white;
+    padding-bottom: 10px;
+    border-bottom: 1px solid white;
+    margin-bottom: 10px;
 `;
 
 const SidebarImg = styled.img`
@@ -93,6 +107,7 @@ const SidebarUploadLabel = styled.label`
     height: 30px;
     background-color: orange;
     color: black;
+    margin-top: 40px;
 
     :hover {
         cursor: pointer;
@@ -108,31 +123,68 @@ const SidebarUploadedImagesContainer = styled.div`
     flex-direction: column;
 `;
 
+const BackgroundContainer = styled.div`
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const BackgroundTitle = styled.div`
+    color: white;
+    font-size: 14px;
+    width: 100%;
+    border-bottom: 1px solid white;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+`;
+
 const Sidebar = (props) => {
     const [activeSidebar, setActiveSidebar] = useState('');
     const [uploadedImages, setUploadedImages] = useState([]);
-    const sidebarItems = [
-        {
-            en: 'template',
-            ch: '範本',
+    const [chosenBackgroundColor, setChosenBackgroundColor] = useState({
+        background: {
+            r: '255',
+            g: '255',
+            b: '255',
+            a: '1',
         },
+    });
+    const sidebarItems = [
+        // {
+        //     en: 'template',
+        //     ch: '範本',
+        // },
         {
             en: 'text',
             ch: '文字',
+            src: SidebarIcons.textIcon,
         },
         {
             en: 'image',
             ch: '照片',
+            src: SidebarIcons.pictureIcon,
+        },
+        {
+            en: 'background',
+            ch: '背景',
+            src: SidebarIcons.backgroundIcon,
+        },
+        {
+            en: 'graph',
+            ch: '圖形',
+            src: SidebarIcons.textIcon,
         },
         {
             en: 'upload',
             ch: '上傳',
+            src: SidebarIcons.uploadIcon,
         },
     ];
 
     const sidebarImages = [
         {
-            type: 'dogs',
+            type: 'Dogs',
             src: [
                 SidebarImages.dog001,
                 SidebarImages.dog002,
@@ -141,12 +193,12 @@ const Sidebar = (props) => {
             ],
         },
         {
-            type: 'cats',
+            type: 'Birthday',
             src: [
-                SidebarImages.dog001,
-                SidebarImages.dog002,
-                SidebarImages.dog003,
-                SidebarImages.dog004,
+                SidebarImages.birthday001,
+                SidebarImages.birthday002,
+                SidebarImages.birthday003,
+                SidebarImages.birthday004,
             ],
         },
     ];
@@ -174,28 +226,68 @@ const Sidebar = (props) => {
         },
     ];
 
+    const sidebarShapes = [
+        { type: 'square' },
+        { type: 'radiusSquare' },
+        { type: 'circle' },
+        { type: 'triangle' },
+    ];
+
     const selectSidebar = (e) => {
         const selectedSidebar = e.target.dataset.type;
         setActiveSidebar(selectedSidebar);
     };
 
     const addImageToCanvas = (e) => {
-        fabric.Image.fromURL(e.target.src, (img) => {
-            const oImg = img.set({
+        fabric.Image.fromURL(
+            e.target.src,
+            (img) => {
+                const oImg = img.set({
+                    top: 10,
+                    left: 10,
+                    scaleX: Math.max(
+                        props.canvas.width / 4 / e.target.naturalWidth,
+                        props.canvas.width / 4 / e.target.naturalWidth
+                    ),
+                    scaleY: Math.max(
+                        props.canvas.width / 4 / e.target.naturalWidth,
+                        props.canvas.width / 4 / e.target.naturalWidth
+                    ),
+                });
+                props.canvas.add(oImg);
+            },
+            {
+                crossOrigin: 'anonymous',
+            }
+        );
+        props.canvas.requestRenderAll();
+    };
+
+    // const addRectToCanvas = () => {
+    //     const rect = new fabric.Rect({
+    //         top: 10,
+    //         left: 10,
+    //         height: 100,
+    //         width: 100,
+    //         fill: '#e89a4f',
+    //     });
+    //     props.canvas.add(rect);
+    //     props.canvas.requestRenderAll();
+    // };
+
+    const addShapeToCanvas = (src) => {
+        fabric.loadSVGFromURL(src, (objects, options) => {
+            const newShape = fabric.util.groupSVGElements(objects, options);
+            newShape.set({
                 top: 10,
                 left: 10,
-                scaleX: Math.max(
-                    props.canvas.width / 4 / e.target.naturalWidth,
-                    props.canvas.width / 4 / e.target.naturalWidth
-                ),
-                scaleY: Math.max(
-                    props.canvas.width / 4 / e.target.naturalWidth,
-                    props.canvas.width / 4 / e.target.naturalWidth
-                ),
+                width: 100,
+                height: 100,
+                fill: '#e89a4f',
             });
-            props.canvas.add(oImg);
+            props.canvas.add(newShape);
+            props.canvas.requestRenderAll();
         });
-        props.canvas.requestRenderAll();
     };
 
     const addTextToCanvas = (e) => {
@@ -216,9 +308,16 @@ const Sidebar = (props) => {
         uploadImageToStorage(fileList);
     };
 
-    useEffect(() => {
-        showUploadedImages(setUploadedImages);
-    }, []);
+    const handelBackgroundColor = (color) => {
+        const colorRgba = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+        setChosenBackgroundColor({ background: colorRgba });
+        props.canvas.backgroundColor = colorRgba;
+        props.canvas.requestRenderAll();
+    };
+
+    // useEffect(() => {
+    //     showUploadedImages(setUploadedImages);
+    // }, []);
 
     useEffect(() => {
         showUploadedImages(setUploadedImages);
@@ -233,6 +332,10 @@ const Sidebar = (props) => {
                         onClick={selectSidebar}
                         data-type={item.en}
                     >
+                        <SidebarItemIcon
+                            src={item.src}
+                            style={{ width: '20px' }}
+                        />
                         {item.ch}
                     </SidebarItem>
                 ))}
@@ -265,6 +368,33 @@ const Sidebar = (props) => {
                         </SidebarText>
                     ))}
                 </SidebarItemContainer>
+            ) : activeSidebar === 'background' ? (
+                <SidebarItemContainer>
+                    <BackgroundContainer>
+                        <BackgroundTitle>背景顏色</BackgroundTitle>
+                        <ChromePicker
+                            color={chosenBackgroundColor.background}
+                            onChange={handelBackgroundColor}
+                        ></ChromePicker>
+                    </BackgroundContainer>
+                </SidebarItemContainer>
+            ) : activeSidebar === 'graph' ? (
+                <SidebarItemContainer>
+                    <BackgroundContainer>
+                        <BackgroundTitle>圖形</BackgroundTitle>
+                        <div>
+                            {sidebarShapes.map((shape) => (
+                                <img
+                                    key={shape.type}
+                                    src={SidebarShapes[shape.type]}
+                                    onClick={(e) => {
+                                        addShapeToCanvas(e.target.src);
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </BackgroundContainer>
+                </SidebarItemContainer>
             ) : activeSidebar === 'upload' ? (
                 <SidebarItemContainer>
                     <SidebarUploadLabel>
@@ -275,13 +405,16 @@ const Sidebar = (props) => {
                         ></SidebarUpload>
                     </SidebarUploadLabel>
                     <SidebarUploadedImagesContainer>
-                        container
                         {uploadedImages.length > 0
                             ? uploadedImages.map((img) => (
                                   <img
                                       key={img.src}
                                       src={img.src}
                                       onClick={addImageToCanvas}
+                                      style={{
+                                          width: '200px',
+                                          margin: '10px auto 0',
+                                      }}
                                   ></img>
                               ))
                             : null}
