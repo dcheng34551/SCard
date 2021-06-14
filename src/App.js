@@ -7,6 +7,7 @@ import LoginPage from './components/Pages/LoginPage';
 import MainPage from './components/Pages/MainPage';
 import ShowPage from './components/Pages/ShowPage';
 import SendPage from './components/Pages/SendPage';
+import UndefinedPage from './components/Pages/undefinedPage';
 import './Utils/firebase';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     const [currentUserTimes, setCurrentUserTimes] = useState(0);
 
     useEffect(() => {
+        setCurrentUser(currentUser);
         console.log(currentUser);
     }, [currentUser]);
 
@@ -24,6 +26,7 @@ function App() {
         });
         setCurrentUserTimes(1);
     }
+
     return (
         <Router>
             <div className="App">
@@ -32,17 +35,6 @@ function App() {
                         path="/edit/:cardId"
                         render={(props) => (
                             <EditPage
-                                currentUser={currentUser}
-                                setCurrentUser={setCurrentUser}
-                                {...props}
-                            />
-                        )}
-                    />
-                    <Route
-                        path="/"
-                        exact
-                        render={(props) => (
-                            <LoginPage
                                 currentUser={currentUser}
                                 setCurrentUser={setCurrentUser}
                                 {...props}
@@ -73,6 +65,27 @@ function App() {
                         path="/send/:id"
                         render={(props) => (
                             <SendPage
+                                currentUser={currentUser}
+                                setCurrentUser={setCurrentUser}
+                                {...props}
+                            />
+                        )}
+                    />
+                    <Route
+                        path="/"
+                        exact
+                        render={(props) => (
+                            <LoginPage
+                                currentUser={currentUser}
+                                setCurrentUser={setCurrentUser}
+                                {...props}
+                            />
+                        )}
+                    />
+                    <Route
+                        path="/*"
+                        render={(props) => (
+                            <UndefinedPage
                                 currentUser={currentUser}
                                 setCurrentUser={setCurrentUser}
                                 {...props}

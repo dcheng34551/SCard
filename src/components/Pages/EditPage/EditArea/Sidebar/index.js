@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { fabric } from 'fabric';
 import { ChromePicker } from 'react-color';
-import firebase from 'firebase';
+// import firebase from 'firebase';
 import {
     uploadImageToStorage,
     showData,
     showUploadedImages,
+    deleteUploadedImage,
 } from '../../../../../Utils/firebase';
 import * as SidebarImages from '../../../../../images/sidebarImages';
 import * as SidebarIcons from '../../../../../images/icons';
@@ -14,15 +15,14 @@ import * as SidebarShapes from '../../../../../images/sidebarShapes';
 
 const SidebarContainer = styled.div`
     display: flex;
-    background-color: #3f3a3a;
-    width: 330px;
+    background-color: #8bcac8;
 `;
 
 const SidebarItems = styled.div`
-    margin-top: 100px;
+    margin-top: 80px;
     display: flex;
     flex-direction: column;
-    width: 50px;
+    width: 60px;
     height: calc(100vh - 100px);
 `;
 
@@ -31,16 +31,19 @@ const SidebarItem = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
-    margin-bottom: 30px;
+    width: 60px;
+    height: 80px;
+    /* margin-bottom: 30px; */
+    background-color: #8bcac8;
 
     :hover {
-        color: white;
         cursor: pointer;
-        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(228deg)
-            brightness(103%) contrast(101%);
     }
+`;
+
+const ActiveSidebarItem = styled(SidebarItem)`
+    color: white;
+    background-color: #3f3a3a;
 `;
 
 const SidebarItemIcon = styled.img`
@@ -48,29 +51,34 @@ const SidebarItemIcon = styled.img`
     margin-bottom: 3px;
 `;
 
+const ActiveSidebarItemIcon = styled(SidebarItemIcon)`
+    filter: invert(100%) sepia(0%) saturate(100%) hue-rotate(100deg)
+        brightness(100%) contrast(100%);
+`;
+
 const SidebarItemContainer = styled.div`
-    margin-left: 20px;
-    margin-right: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     margin-top: 80px;
     width: 280px;
     display: flex;
     flex-direction: column;
+    background-color: #3f3a3a;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
 `;
-
-// const SidebarTextContainer = styled.div`
-//     width: 280px;
-//     display: flex;
-//     flex-direction: column;
-// `;
 
 const SidebarText = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     font-size: ${(props) => `${props.size}px`};
     background-color: rgba(255, 255, 255, 0.6);
     margin-top: 20px;
-    color: white;
+    color: black;
     width: 100%;
 
     :hover {
@@ -81,21 +89,36 @@ const SidebarText = styled.div`
 const SidebarImgsContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
+    gap: 16px;
     margin: 20px;
-    margin-top: 40px;
+    margin-top: 20px;
 `;
 
 const SidebarImgTitle = styled.div`
     width: 100%;
     display: flex;
     color: white;
-    padding-bottom: 10px;
+    font-size: 16px;
+    padding-bottom: 8px;
     border-bottom: 1px solid white;
     margin-bottom: 10px;
 `;
 
 const SidebarImg = styled.img`
     width: 100px;
+    border: 1px solid white;
+    border-radius: 4px;
+    :hover {
+        cursor: pointer;
+    }
+`;
+
+const SidebarShape = styled.img`
+    width: 100px;
+    margin-left: 25px;
+    :hover {
+        cursor: pointer;
+    }
 `;
 
 const SidebarUploadLabel = styled.label`
@@ -105,7 +128,7 @@ const SidebarUploadLabel = styled.label`
     justify-content: center;
     border-radius: 5px;
     height: 30px;
-    background-color: orange;
+    background-color: #f1c394;
     color: black;
     margin-top: 40px;
 
@@ -121,6 +144,8 @@ const SidebarUpload = styled.input`
 const SidebarUploadedImagesContainer = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: center;
+    /* overflow-y: auto; */
 `;
 
 const BackgroundContainer = styled.div`
@@ -132,11 +157,47 @@ const BackgroundContainer = styled.div`
 
 const BackgroundTitle = styled.div`
     color: white;
-    font-size: 14px;
+    font-size: 16px;
     width: 100%;
     border-bottom: 1px solid white;
+    padding-left: 4px;
     padding-bottom: 10px;
     margin-bottom: 20px;
+`;
+
+const UploadedImageContainer = styled.div`
+    width: 200px;
+    position: relative;
+`;
+
+const UploadedImage = styled.img`
+    width: 198px;
+    margin: 10px auto 10px;
+    border: 1px solid white;
+
+    :hover {
+        cursor: pointer;
+    }
+`;
+
+const DeleteUploadedImageBtn = styled.div`
+    display: flex;
+    justify-content: center;
+    line-height: 1;
+    width: 20px;
+    height: 20px;
+    color: white;
+    border-radius: 50%;
+    border: 1px solid white;
+    background-color: #3f3a3a;
+    position: absolute;
+    top: 8px;
+    right: -2px;
+
+    :hover {
+        background-color: #cc9966;
+        cursor: pointer;
+    }
 `;
 
 const Sidebar = (props) => {
@@ -173,7 +234,7 @@ const Sidebar = (props) => {
         {
             en: 'graph',
             ch: '圖形',
-            src: SidebarIcons.textIcon,
+            src: SidebarIcons.shapeIcon,
         },
         {
             en: 'upload',
@@ -184,7 +245,8 @@ const Sidebar = (props) => {
 
     const sidebarImages = [
         {
-            type: 'Dogs',
+            type: '動物',
+            typeEn: 'Dogs',
             src: [
                 SidebarImages.dog001,
                 SidebarImages.dog002,
@@ -193,12 +255,23 @@ const Sidebar = (props) => {
             ],
         },
         {
-            type: 'Birthday',
+            type: '生日',
+            typeEn: 'Birthday',
             src: [
                 SidebarImages.birthday001,
                 SidebarImages.birthday002,
                 SidebarImages.birthday003,
                 SidebarImages.birthday004,
+            ],
+        },
+        {
+            type: '程式',
+            typeEn: 'Code',
+            src: [
+                SidebarImages.code001,
+                SidebarImages.code002,
+                SidebarImages.code003,
+                SidebarImages.code004,
             ],
         },
     ];
@@ -207,7 +280,7 @@ const Sidebar = (props) => {
         {
             title: '雙擊編輯標題',
             size: 36,
-            fontWeight: 'bold',
+            fontWeight: 'normal',
             content: '新增標題',
             type: 'title',
         },
@@ -231,6 +304,10 @@ const Sidebar = (props) => {
         { type: 'radiusSquare' },
         { type: 'circle' },
         { type: 'triangle' },
+        { type: 'star' },
+        { type: 'waterDrop' },
+        { type: 'heart' },
+        { type: 'bling' },
     ];
 
     const selectSidebar = (e) => {
@@ -263,18 +340,6 @@ const Sidebar = (props) => {
         props.canvas.requestRenderAll();
     };
 
-    // const addRectToCanvas = () => {
-    //     const rect = new fabric.Rect({
-    //         top: 10,
-    //         left: 10,
-    //         height: 100,
-    //         width: 100,
-    //         fill: '#e89a4f',
-    //     });
-    //     props.canvas.add(rect);
-    //     props.canvas.requestRenderAll();
-    // };
-
     const addShapeToCanvas = (src) => {
         fabric.loadSVGFromURL(src, (objects, options) => {
             const newShape = fabric.util.groupSVGElements(objects, options);
@@ -283,7 +348,7 @@ const Sidebar = (props) => {
                 left: 10,
                 width: 100,
                 height: 100,
-                fill: '#e89a4f',
+                fill: '#F1C394',
             });
             props.canvas.add(newShape);
             props.canvas.requestRenderAll();
@@ -305,7 +370,9 @@ const Sidebar = (props) => {
 
     const handelUploadImageToStorage = (e) => {
         const fileList = e.target.files;
-        uploadImageToStorage(fileList);
+        uploadImageToStorage(fileList, props.currentUser.email, () => {
+            showUploadedImages(setUploadedImages, props.currentUser.email);
+        });
     };
 
     const handelBackgroundColor = (color) => {
@@ -315,29 +382,53 @@ const Sidebar = (props) => {
         props.canvas.requestRenderAll();
     };
 
-    // useEffect(() => {
-    //     showUploadedImages(setUploadedImages);
-    // }, []);
+    const handleDeleteUploadedImage = (e) => {
+        deleteUploadedImage(e.target.id, props.currentUser.email, () => {
+            showUploadedImages(setUploadedImages, props.currentUser.email);
+        });
+    };
 
     useEffect(() => {
-        showUploadedImages(setUploadedImages);
-    }, [uploadedImages]);
+        if (props.currentUser.email) {
+            showUploadedImages(setUploadedImages, props.currentUser.email);
+        }
+    }, [props.currentUser]);
 
     return (
         <SidebarContainer>
             <SidebarItems>
                 {sidebarItems.map((item) => (
-                    <SidebarItem
-                        key={item.en}
-                        onClick={selectSidebar}
-                        data-type={item.en}
-                    >
-                        <SidebarItemIcon
-                            src={item.src}
-                            style={{ width: '20px' }}
-                        />
-                        {item.ch}
-                    </SidebarItem>
+                    <>
+                        {activeSidebar === item.en ? (
+                            <ActiveSidebarItem
+                                key={item.en}
+                                onClick={selectSidebar}
+                                data-type={item.en}
+                            >
+                                <ActiveSidebarItemIcon
+                                    src={item.src}
+                                    style={{ width: '20px' }}
+                                    data-type={item.en}
+                                    onClick={selectSidebar}
+                                />
+                                {item.ch}
+                            </ActiveSidebarItem>
+                        ) : (
+                            <SidebarItem
+                                key={item.en}
+                                onClick={selectSidebar}
+                                data-type={item.en}
+                            >
+                                <SidebarItemIcon
+                                    src={item.src}
+                                    style={{ width: '20px' }}
+                                    data-type={item.en}
+                                    onClick={selectSidebar}
+                                />
+                                {item.ch}
+                            </SidebarItem>
+                        )}
+                    </>
                 ))}
             </SidebarItems>
             {activeSidebar === 'image' ? (
@@ -363,6 +454,7 @@ const Sidebar = (props) => {
                             key={text.size}
                             data-index={index}
                             onClick={addTextToCanvas}
+                            style={{ fontWeight: text.fontWeight }}
                         >
                             {text.title}
                         </SidebarText>
@@ -384,7 +476,7 @@ const Sidebar = (props) => {
                         <BackgroundTitle>圖形</BackgroundTitle>
                         <div>
                             {sidebarShapes.map((shape) => (
-                                <img
+                                <SidebarShape
                                     key={shape.type}
                                     src={SidebarShapes[shape.type]}
                                     onClick={(e) => {
@@ -407,15 +499,19 @@ const Sidebar = (props) => {
                     <SidebarUploadedImagesContainer>
                         {uploadedImages.length > 0
                             ? uploadedImages.map((img) => (
-                                  <img
-                                      key={img.src}
-                                      src={img.src}
-                                      onClick={addImageToCanvas}
-                                      style={{
-                                          width: '200px',
-                                          margin: '10px auto 0',
-                                      }}
-                                  ></img>
+                                  <UploadedImageContainer>
+                                      <UploadedImage
+                                          key={img.src}
+                                          src={img.src}
+                                          onClick={addImageToCanvas}
+                                      ></UploadedImage>
+                                      <DeleteUploadedImageBtn
+                                          onClick={handleDeleteUploadedImage}
+                                          id={img.id}
+                                      >
+                                          x
+                                      </DeleteUploadedImageBtn>
+                                  </UploadedImageContainer>
                               ))
                             : null}
                     </SidebarUploadedImagesContainer>

@@ -111,7 +111,11 @@ const LoginPage = (props) => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        const a = await nativeSignup(signupName, signupEmail, signupPassword);
+        const asyncSignup = await nativeSignup(
+            signupName,
+            signupEmail,
+            signupPassword
+        );
         props.setCurrentUser(signupEmail);
         console.log(props.currentUser);
         setSignupName('');
@@ -121,8 +125,16 @@ const LoginPage = (props) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const a = await nativeLogin(loginEmail, loginPassword);
-        props.setCurrentUser({ email: loginEmail });
+        const aysncLogin = await nativeLogin(
+            loginEmail,
+            loginPassword,
+            () => {
+                props.setCurrentUser({ email: loginEmail });
+            },
+            () => {
+                window.alert('帳號密碼有誤');
+            }
+        );
     };
 
     useEffect(() => {
