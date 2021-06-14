@@ -355,7 +355,9 @@ const SendPage = (props) => {
                                         value={option.basicSetting.id}
                                         key={option.basicSetting.id}
                                     >
-                                        {option.basicSetting.id}
+                                        {option.cardName
+                                            ? option.cardName
+                                            : option.basicSetting.id}
                                     </option>
                                 ))}
                                 {/* <option value="e371aac6-b4f9-4d13-b475-0d71369704e9">
