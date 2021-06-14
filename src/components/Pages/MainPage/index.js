@@ -7,6 +7,7 @@ import {
     createNewCard,
     navToSendCard,
     mapDataForExplore,
+    mapExampleDataForExplore,
     getDataForProfile,
     navToEditCard,
 } from '../../../Utils/firebase';
@@ -66,8 +67,13 @@ const MainProfileName = styled.div`
     display: flex;
     width: 200px;
     margin-top: 30px;
+    padding-left: 20px;
     font-size: 20px;
     color: white;
+`;
+
+const MainProfileMail = styled(MainProfileName)`
+    font-size: 14px;
 `;
 
 const MainProfileImg = styled.img`
@@ -79,6 +85,7 @@ const MainProfileImg = styled.img`
 const SendMailBtn = styled.div`
     width: 200px;
     height: 40px;
+    border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -94,7 +101,8 @@ const SendMailBtn = styled.div`
 const MainCards = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: #f3f3f3;
+    background-color: #f9f2ec;
+    box-shadow: inset 0 0 10px #b6b6b6;
     width: calc(100vw - 330px);
 `;
 
@@ -122,26 +130,52 @@ const RecCardsRow = styled.div`
     display: flex;
     width: calc(100% - 60px);
     margin-top: 20px;
-    margin-left: 60px;
+`;
+
+const CardContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 300px;
+    margin-left: 80px;
+    border: 1px solid #996633;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    :hover {
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
 `;
 
 const NewCard = styled.div`
     display: flex;
     width: 160px;
     height: 240px;
+    border-radius: 4px;
     align-items: center;
     justify-content: center;
-    background-color: gray;
-    margin-left: 80px;
+    background-color: #996633;
     font-size: 40px;
+    color: white;
     :hover {
-        cursor: pointer;
+        font-size: 50px;
     }
 `;
 
+const CardName = styled.div`
+    font-size: 16px;
+    margin-top: 10px;
+    color: #5f3f1f;
+`;
+
 const CardImg = styled.img`
-    width: 160px;
-    margin-left: 20px;
+    width: 158px;
+    height: 238px;
+    border: 1px solid #5f3f1f;
+    border-radius: 4px;
+
     :hover {
         cursor: pointer;
     }
@@ -150,6 +184,7 @@ const CardImg = styled.img`
 const MainPage = (props) => {
     const history = useHistory();
     const [imgArr, setImgArr] = useState([]);
+    const [sampleImgArr, setSampleImgArr] = useState([]);
     const [profileName, setProfileName] = useState('');
     const [profileEmail, setProfileEmail] = useState('');
 
@@ -170,6 +205,7 @@ const MainPage = (props) => {
 
     const handleEditExistCard = (e) => {
         navToEditCard(e.target.dataset.id);
+        // console.log('this', e.target);
     };
 
     const navToSendCardPage = () => {
@@ -184,11 +220,11 @@ const MainPage = (props) => {
             // console.log(card);
             setImgArr(card);
         });
-    }, []);
 
-    // useEffect(() => {
-    //     // console.log(`This is ${imgArr}`);
-    // }, [imgArr]);
+        mapExampleDataForExplore().then((card) => {
+            setSampleImgArr(card);
+        });
+    }, []);
 
     useEffect(() => {
         if (props.currentUser && props.currentUser.email === 'noUser') {
@@ -212,7 +248,7 @@ const MainPage = (props) => {
                 <MainProfile>
                     <MainProfileImg src={defaultImg}></MainProfileImg>
                     <MainProfileName>{profileName}</MainProfileName>
-                    <MainProfileName>{profileEmail}</MainProfileName>
+                    <MainProfileMail>{profileEmail}</MainProfileMail>
                     <SendMailBtn onClick={navToSendCardPage}>
                         我要寄信
                     </SendMailBtn>
@@ -220,24 +256,46 @@ const MainPage = (props) => {
                 <MainCards>
                     <MyCardsRowTitle>我的卡片</MyCardsRowTitle>
                     <MyCardsRow>
-                        <NewCard onClick={handleCreateNewCard}>+</NewCard>
+                        <CardContainer onClick={handleCreateNewCard}>
+                            <NewCard>+</NewCard>
+                            <CardName>新增卡片</CardName>
+                        </CardContainer>
                         {imgArr.map((img) => (
-                            <CardImg
-                                onClick={handleEditExistCard}
-                                key={img.snapshot}
+                            <CardContainer
                                 data-id={img.basicSetting.id}
-                                src={img.snapshot}
-                            ></CardImg>
+                                key={img.basicSetting.id}
+                                onClick={handleEditExistCard}
+                            >
+                                <CardImg
+                                    data-id={img.basicSetting.id}
+                                    key={img.snapshot}
+                                    src={
+                                        img.snapshot
+                                            ? img.snapshot
+                                            : img.default
+                                    }
+                                    onClick={handleEditExistCard}
+                                ></CardImg>
+                                <CardName>{img.cardName}</CardName>
+                            </CardContainer>
                         ))}
                     </MyCardsRow>
                     <RecRowTitle>為您推薦</RecRowTitle>
                     <RecCardsRow>
-                        {imgArr.map((img) => (
-                            <CardImg
-                                // onClick={handleEditExistCard}
-                                key={img.snapshot}
-                                src={img.snapshot}
-                            ></CardImg>
+                        {sampleImgArr.map((img) => (
+                            <CardContainer
+                                data-id={img.basicSetting.id}
+                                key={img.basicSetting.id}
+                                onClick={handleEditExistCard}
+                            >
+                                <CardImg
+                                    onClick={handleEditExistCard}
+                                    data-id={img.basicSetting.id}
+                                    key={img.snapshot}
+                                    src={img.snapshot}
+                                ></CardImg>
+                                <CardName>{img.cardName}</CardName>
+                            </CardContainer>
                         ))}
                     </RecCardsRow>
                 </MainCards>

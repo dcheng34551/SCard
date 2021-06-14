@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { logo } from '../../../images/index';
-import { getAllSnapshots } from '../../../Utils/firebase';
+import {
+    getAllSnapshots,
+    navToEditCard,
+    navToSendCard,
+} from '../../../Utils/firebase';
+import { backIcon, mailIcon, editIcon } from '../../../images/icons';
 
 const Nav = styled.nav`
     position: fixed;
@@ -15,15 +20,74 @@ const Nav = styled.nav`
     background-color: white;
 `;
 
-const Logo = styled.img`
+const LogoAnchor = styled.a`
     width: 110px;
     margin-left: 30px;
 `;
 
+const Logo = styled.img`
+    width: 100%;
+`;
+
+const ActionContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 30px;
+`;
+
+const EditBtn = styled.button`
+    height: 24px;
+    width: 90px;
+    background-color: #172f2f;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-right: 20px;
+    line-height: 0.9;
+    font-size: 14px;
+    :hover {
+        cursor: pointer;
+        background-color: #996633;
+        border: 1px solid #996633;
+    }
+`;
+
+const SendBtn = styled.button`
+    height: 24px;
+    width: 60px;
+    background-color: #172f2f;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    line-height: 0.9;
+    font-size: 14px;
+    :hover {
+        cursor: pointer;
+        background-color: #996633;
+        border: 1px solid #996633;
+    }
+`;
+
+const WhiteBtn = styled.img`
+    width: 16px;
+    filter: invert(100%) sepia(0%) saturate(100%) hue-rotate(100deg)
+        brightness(100%) contrast(100%);
+`;
+
 const Body = styled.div`
+    margin-top: 80px;
     width: 100vw;
-    height: 100vh;
-    background-color: #f3f3f3;
+    height: calc(100vh - 80px);
+    background-color: #f9f2ec;
+    box-shadow: inset 0 0 10px #b6b6b6;
+    position: relative;
 `;
 
 const Card = styled.div`
@@ -41,6 +105,10 @@ const Card = styled.div`
     perspective: 3000px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
     transition: 0.5s;
+
+    :hover {
+        cursor: pointer;
+    }
 `;
 
 const Cover = styled.div`
@@ -88,6 +156,14 @@ const ShowPage = (props) => {
         setCardOpened(!cardOpend);
     };
 
+    const handleNavToEditCard = () => {
+        navToEditCard(cardId);
+    };
+
+    const handleNavToSendCard = () => {
+        navToSendCard(props.currentUser.email);
+    };
+
     useEffect(() => {
         setCardId(props.match.params.cardId);
     }, []);
@@ -106,7 +182,22 @@ const ShowPage = (props) => {
     return (
         <>
             <Nav>
-                <Logo src={logo}></Logo>
+                <LogoAnchor href={`/main/${props.currentUser.email}`}>
+                    <Logo src={logo} />
+                </LogoAnchor>
+                {props.currentUser.email &&
+                props.currentUser.email !== 'noUser' ? (
+                    <ActionContainer>
+                        <EditBtn onClick={handleNavToEditCard}>
+                            <WhiteBtn src={backIcon} />
+                            繼續編輯
+                        </EditBtn>
+                        <SendBtn onClick={handleNavToSendCard}>
+                            <WhiteBtn src={mailIcon} />
+                            寄信
+                        </SendBtn>
+                    </ActionContainer>
+                ) : null}
             </Nav>
             <Body>
                 <Card
