@@ -5,6 +5,7 @@ import {
     getAllSnapshots,
     navToEditCard,
     navToSendCard,
+    getCardUser,
 } from '../../../Utils/firebase';
 import { backIcon, mailIcon, editIcon } from '../../../images/icons';
 
@@ -151,6 +152,7 @@ const ShowPage = (props) => {
     const [coverSnapshot, setCoverSnapshot] = useState('');
     const [leftInnerSnapshot, setLeftInnerSnapshot] = useState('');
     const [rightInnerSnapshot, setRightInnerSnapshot] = useState('');
+    const [cardAuthor, setCardAuthor] = useState('');
 
     const handleCardOpened = () => {
         setCardOpened(!cardOpend);
@@ -166,6 +168,7 @@ const ShowPage = (props) => {
 
     useEffect(() => {
         setCardId(props.match.params.cardId);
+        getCardUser(props.match.params.cardId, setCardAuthor);
     }, []);
 
     useEffect(() => {
@@ -188,14 +191,18 @@ const ShowPage = (props) => {
                 {props.currentUser.email &&
                 props.currentUser.email !== 'noUser' ? (
                     <ActionContainer>
-                        <EditBtn onClick={handleNavToEditCard}>
-                            <WhiteBtn src={backIcon} />
-                            繼續編輯
-                        </EditBtn>
-                        <SendBtn onClick={handleNavToSendCard}>
-                            <WhiteBtn src={mailIcon} />
-                            寄信
-                        </SendBtn>
+                        {cardAuthor === props.currentUser.email ? (
+                            <>
+                                <EditBtn onClick={handleNavToEditCard}>
+                                    <WhiteBtn src={backIcon} />
+                                    繼續編輯
+                                </EditBtn>
+                                <SendBtn onClick={handleNavToSendCard}>
+                                    <WhiteBtn src={mailIcon} />
+                                    寄信
+                                </SendBtn>
+                            </>
+                        ) : null}
                     </ActionContainer>
                 ) : null}
             </Nav>

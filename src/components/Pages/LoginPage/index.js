@@ -46,10 +46,13 @@ const FieldBtn = styled.input`
     align-self: center;
     font-size: 18px;
     color: white;
+    border-radius: 4px;
     background-color: #172f2f;
     border: 1px solid #172f2f;
     :hover {
         cursor: pointer;
+        background-color: #996633;
+        border: 1px solid #996633;
     }
 `;
 
@@ -63,7 +66,7 @@ const SignupChangeTag = styled.div`
     font-size: 14px;
     margin-left: 20px;
     color: #996633;
-    font-weight: bold;
+    /* font-weight: bold; */
     :hover {
         color: #e6ccb3;
         cursor: pointer;
@@ -106,8 +109,8 @@ const LoginPage = (props) => {
     const [signupName, setSignupName] = useState('');
     const [signupEmail, setSignupEmail] = useState('');
     const [signupPassword, setSignupPassword] = useState('');
-    const [loginEmail, setLoginEmail] = useState('');
-    const [loginPassword, setLoginPassword] = useState('');
+    const [loginEmail, setLoginEmail] = useState('test@test.com');
+    const [loginPassword, setLoginPassword] = useState('test123');
 
     const handleSignup = async (e) => {
         e.preventDefault();
