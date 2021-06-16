@@ -4,17 +4,14 @@ import styled from 'styled-components';
 import { logo } from '../../../images/index';
 import {
     nativeLogout,
-    createNewCard,
-    navToSendCard,
-    mapDataForExplore,
     getDataForProfile,
-    navToEditCard,
     navToMainPage,
     sendMail,
     getAllSnapshots,
     mapDataForOptions,
 } from '../../../Utils/firebase';
 import { defaultImg } from '../../../images/default';
+import { profileLoading } from '../../../images/loading';
 
 const Nav = styled.nav`
     position: fixed;
@@ -28,9 +25,13 @@ const Nav = styled.nav`
     background-color: white;
 `;
 
-const Logo = styled.img`
+const LogoAnchor = styled.a`
     width: 110px;
     margin-left: 30px;
+`;
+
+const Logo = styled.img`
+    width: 100%;
 `;
 
 const Logout = styled.div`
@@ -43,10 +44,11 @@ const Logout = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #172f2f;
+    color: #fff;
+    background-color: #172f2f;
     :hover {
         cursor: pointer;
-        color: #996633;
+        background-color: #996633;
         border-color: #996633;
     }
 `;
@@ -69,8 +71,14 @@ const MainProfileName = styled.div`
     display: flex;
     width: 200px;
     margin-top: 30px;
+    padding-left: 20px;
     font-size: 20px;
     color: white;
+`;
+
+const MainProfileMail = styled(MainProfileName)`
+    font-size: 14px;
+    margin-bottom: 30px;
 `;
 
 const MainProfileImg = styled.img`
@@ -79,24 +87,38 @@ const MainProfileImg = styled.img`
     border-radius: 10px;
 `;
 
+const ProfileLoadingContainer = styled.div`
+    display: flex;
+    width: 100%;
+    height: 139px;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ProfileLoadingImg = styled.img`
+    width: 80px;
+`;
+
 const SendMailBtn = styled.div`
     width: 200px;
     height: 40px;
+    border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 18px;
     color: white;
-    margin-top: 30px;
     background-color: #996633;
     :hover {
         cursor: pointer;
+        color: #996633;
+        background-color: #fff;
     }
 `;
 
 const MainSendingArea = styled.div`
     display: flex;
-    background-color: #a6a6a6;
+    background-color: #f9f2ec;
     width: calc(100vw - 330px);
     height: calc(100vh - 80px);
     margin-top: 80px;
@@ -151,7 +173,7 @@ const MainSendingFormInput = styled.input`
     border: 1px solid rgba(100, 100, 100, 0.6);
     text-indent: 20px;
     font-size: 18px;
-    color: rgba(100, 100, 100, 0.6);
+    color: black;
     border-radius: 5px;
 `;
 
@@ -247,19 +269,20 @@ const SubmitBtn = styled.input`
     color: white;
     :hover {
         cursor: pointer;
+        background-color: #996633;
     }
 `;
 
 const SendPage = (props) => {
     const history = useHistory();
-    const [imgArr, setImgArr] = useState([]);
     const [profileName, setProfileName] = useState('');
     const [profileEmail, setProfileEmail] = useState('');
     const [selectedCard, setSelectedCard] = useState('');
-    const [email, setEmail] = useState('');
-    const [recipient, setRecipient] = useState('');
-    const [sender, setSender] = useState('');
+    const [email, setEmail] = useState('dcheng123331@gmail.com');
+    const [recipient, setRecipient] = useState('收件的京岱');
+    const [sender, setSender] = useState('寄件的京岱');
     const [options, setOptions] = useState([]);
+    const [profilePhoto, setProfilePhoto] = useState('');
 
     const navToMain = () => {
         // console.log(props.currentUser);
@@ -274,6 +297,9 @@ const SendPage = (props) => {
             recipient,
             sender
         );
+        setEmail('');
+        setRecipient('');
+        setSender('');
     };
 
     useEffect(() => {
@@ -292,10 +318,17 @@ const SendPage = (props) => {
             getDataForProfile(
                 props.currentUser.email,
                 setProfileName,
-                setProfileEmail
+                setProfileEmail,
+                setProfilePhoto
             );
         }
     }, [props.currentUser]);
+
+    useEffect(() => {
+        if (options.length > 0) {
+            setSelectedCard(options[0].basicSetting.id);
+        }
+    }, [options]);
 
     // card prview
     const [cardId, setCardId] = useState('');
@@ -306,6 +339,11 @@ const SendPage = (props) => {
 
     const handleCardOpened = () => {
         setCardOpened(!cardOpend);
+    };
+
+    const handleLogout = () => {
+        nativeLogout();
+        props.setCurrentUser({ email: 'noUser' });
     };
 
     useEffect(() => {
@@ -323,17 +361,35 @@ const SendPage = (props) => {
         }
     }, [cardId]);
 
+    useEffect(() => {
+        if (props.currentUser && props.currentUser.email === 'noUser') {
+            history.push('/');
+        }
+    }, [props.currentUser]);
+
     return (
         <>
             <Nav>
-                <Logo src={logo} />
-                <Logout>登出</Logout>
+                <LogoAnchor href={`/main/${props.currentUser.email}`}>
+                    <Logo src={logo} />
+                </LogoAnchor>
+                <Logout onClick={handleLogout}>登出</Logout>
             </Nav>
             <MainContainer>
                 <MainProfile>
-                    <MainProfileImg src={defaultImg}></MainProfileImg>
-                    <MainProfileName>{profileName}</MainProfileName>
-                    <MainProfileName>{profileEmail}</MainProfileName>
+                    <MainProfileImg
+                        src={profilePhoto === '' ? defaultImg : profilePhoto}
+                    ></MainProfileImg>
+                    {profileName !== '' ? (
+                        <>
+                            <MainProfileName>{profileName}</MainProfileName>
+                            <MainProfileMail>{profileEmail}</MainProfileMail>
+                        </>
+                    ) : (
+                        <ProfileLoadingContainer>
+                            <ProfileLoadingImg src={profileLoading} />
+                        </ProfileLoadingContainer>
+                    )}
                     <SendMailBtn onClick={navToMain}>回到主頁</SendMailBtn>
                 </MainProfile>
                 <MainSendingArea>
@@ -360,12 +416,6 @@ const SendPage = (props) => {
                                             : option.basicSetting.id}
                                     </option>
                                 ))}
-                                {/* <option value="e371aac6-b4f9-4d13-b475-0d71369704e9">
-                                    母親節卡片
-                                </option>
-                                <option value="c282bb8c-5463-4a48-8e11-b5736d46b5d2">
-                                    生日卡片
-                                </option> */}
                             </MainSendingCardSelect>
                         </InputContainer>
                         <InputContainer>
@@ -386,7 +436,7 @@ const SendPage = (props) => {
                                 收件人:
                             </MainSendingFormLabel>
                             <MainSendingFormInput
-                                placeholder="someone"
+                                placeholder="收件人稱呼"
                                 id="recipient"
                                 onChange={(e) => {
                                     setRecipient(e.target.value);
@@ -399,7 +449,7 @@ const SendPage = (props) => {
                                 寄件人:
                             </MainSendingFormLabel>
                             <MainSendingFormInput
-                                placeholder="you"
+                                placeholder="寄件人稱呼"
                                 id="sender"
                                 onChange={(e) => {
                                     setSender(e.target.value);

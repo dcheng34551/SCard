@@ -19,13 +19,16 @@ function App() {
         console.log(currentUser);
     }, [currentUser]);
 
-    if (currentUserTimes === 0) {
-        firebase.auth().onAuthStateChanged((user) => {
-            user ? setCurrentUser(user) : setCurrentUser({ email: 'noUser' });
-            // console.log(user);
-        });
-        setCurrentUserTimes(1);
-    }
+    useEffect(() => {
+        if (currentUserTimes === 0) {
+            firebase.auth().onAuthStateChanged((user) => {
+                user
+                    ? setCurrentUser(user)
+                    : setCurrentUser({ email: 'noUser' });
+            });
+            setCurrentUserTimes(1);
+        }
+    }, []);
 
     return (
         <Router>

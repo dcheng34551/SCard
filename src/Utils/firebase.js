@@ -40,7 +40,7 @@ export const uploadImageToStorage = (fileList, userId, callback) => {
                         id: imgId,
                     }),
                 }).then(() => {
-                    window.alert('上傳成功');
+                    window.alert('照片上傳成功');
                     callback();
                 });
             });
@@ -400,30 +400,33 @@ export const changeCardName = (userId, cardId, newCardName) => {
             window.alert('更新成功');
         });
 };
-// export const mapDataForExplore = (arr, callback) => {
-//     return cardsDb.get().then((querySnapshot) => {
-//         querySnapshot.forEach((doc) => {
-//             if (doc.data().snapshot) {
-//                 // callback([...arr, doc.data().snapshot]);
-//                 console.log(doc.data());
-//             }
-//         });
-//     });
-// };
 
-// export const mapDataForExplore = (currentUserId, cards, allUsers) => {
-//     const cardsArr = [];
-//     cards.forEach((card) => {
-
-//     })
-// }
+export const deleteCard = (userId, cardId, callback) => {
+    const userRef = usersDb.doc(userId);
+    const cardRef = cardsDb.doc(cardId);
+    cardRef.delete().then(() => {});
+    userRef.get().then((doc) => {
+        userRef.update({
+            cards: doc.data().cards.filter((card) => card.id !== cardId),
+        });
+    });
+    callback();
+};
 
 // get personal profile
-export const getDataForProfile = (userId, setProfileName, setProfileEmail) => {
-    const userRef = usersDb.doc(userId);
+export const getDataForProfile = async (
+    userId,
+    setProfileName,
+    setProfileEmail,
+    setProfilePhoto
+) => {
+    const userRef = await usersDb.doc(userId);
     userRef.get().then((doc) => {
         setProfileName(doc.data().name);
         setProfileEmail(doc.data().email);
+        if (doc.data().profile) {
+            setProfilePhoto(doc.data().profile);
+        }
     });
 };
 
@@ -444,7 +447,7 @@ export const sendMail = (url, email, name, author) => {
             },
         })
         .then(() => {
-            window.alert('Email has been sent!!!');
+            window.alert('卡片已經寄出!!!');
         });
 };
 
@@ -472,5 +475,12 @@ export const getAllSnapshots = (
         setCoverSnapshot(doc.data().snapshot);
         setLeftInnerSnapshot(doc.data().leftInnerSnapshot);
         setRightInnerSnapshot(doc.data().rightInnerSnapshot);
+    });
+};
+
+export const getCardUser = (cardId, setCardUser) => {
+    const cardRef = cardsDb.doc(cardId);
+    cardRef.get().then((doc) => {
+        setCardUser(doc.data().author);
     });
 };

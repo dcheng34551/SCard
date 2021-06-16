@@ -10,6 +10,7 @@ import viewIcon from './view-icon.svg';
 import mailIcon from './mail-icon.svg';
 import backIcon from './back-icon.svg';
 import templateIcon from './template-icon.svg';
+import cardIcon from './card-icon.svg';
 
 export {
     backgroundIcon,
@@ -24,4 +25,5 @@ export {
     mailIcon,
     backIcon,
     templateIcon,
+    cardIcon,
 };
