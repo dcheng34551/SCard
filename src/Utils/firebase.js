@@ -4,7 +4,6 @@ import 'firebase/storage';
 import { firebaseConfig } from './firebaseConfig';
 import { v4 as uuidv4 } from 'uuid';
 import 'firebase/auth';
-import { fabric } from 'fabric';
 // import * as admin from 'firebase-admin';
 
 firebase.initializeApp(firebaseConfig);
@@ -365,6 +364,19 @@ export const mapDataForExplore = (userId) => {
     });
 };
 
+// this problem
+// export const subscribe = (callback, userId) => {
+//     const unsubscribe = usersDb.doc(userId).onSnapshot((doc) => {
+//         callback(doc.data().cards);
+//     });
+//     return unsubscribe;
+// };
+export const subscribe = (userId) => {
+    usersDb.doc(userId).onSnapshot((doc) => {
+        console.log(doc.data().cards);
+    });
+};
+
 export const mapExampleDataForExplore = () => {
     return cardsDb.get().then((snapshot) => {
         const cards = [];
@@ -393,6 +405,7 @@ export const changeCardName = (userId, cardId, newCardName) => {
                 } else {
                     newCardsArr.push(card);
                 }
+                return null;
             });
             userRef.update({ cards: newCardsArr });
         })
@@ -401,17 +414,31 @@ export const changeCardName = (userId, cardId, newCardName) => {
         });
 };
 
-export const deleteCard = (userId, cardId, callback) => {
+export const deleteCard = async (userId, cardId, callback) => {
     const userRef = usersDb.doc(userId);
     const cardRef = cardsDb.doc(cardId);
-    cardRef.delete().then(() => {});
-    userRef.get().then((doc) => {
+    await cardRef.delete().then(() => {});
+    await userRef.get().then((doc) => {
         userRef.update({
             cards: doc.data().cards.filter((card) => card.id !== cardId),
         });
     });
     callback();
 };
+
+// export const deleteCard = (userId, cardId, callback) => {
+//     const userRef = usersDb.doc(userId);
+//     const cardRef = cardsDb.doc(cardId);
+//     cardRef.delete().then(() => {});
+//     userRef
+//         .get()
+//         .then((doc) => {
+//             userRef.update({
+//                 cards: doc.data().cards.filter((card) => card.id !== cardId),
+//             });
+//         })
+//         .then(() => callback());
+// };
 
 // get personal profile
 export const getDataForProfile = async (

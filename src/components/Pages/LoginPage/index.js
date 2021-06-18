@@ -114,11 +114,7 @@ const LoginPage = (props) => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        const asyncSignup = await nativeSignup(
-            signupName,
-            signupEmail,
-            signupPassword
-        );
+        await nativeSignup(signupName, signupEmail, signupPassword);
         props.setCurrentUser(signupEmail);
         console.log(props.currentUser);
         setSignupName('');
@@ -128,7 +124,7 @@ const LoginPage = (props) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const aysncLogin = await nativeLogin(
+        await nativeLogin(
             loginEmail,
             loginPassword,
             () => {

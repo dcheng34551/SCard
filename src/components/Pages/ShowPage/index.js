@@ -7,7 +7,7 @@ import {
     navToSendCard,
     getCardUser,
 } from '../../../Utils/firebase';
-import { backIcon, mailIcon, editIcon } from '../../../images/icons';
+import { backIcon, mailIcon } from '../../../images/icons';
 
 const Nav = styled.nav`
     position: fixed;

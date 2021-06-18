@@ -228,24 +228,12 @@ const SavePreviewContainerLeft = styled.div`
 
 const EditPage = (props) => {
     const [canvas, setCanvas] = useState({});
-    const [cardData, setCardData] = useState({});
+    // const [cardData, setCardData] = useState({});
     const [cardId, setCardId] = useState('');
     const [cover, setCover] = useState({});
     const [inner, setInner] = useState({});
     const [text, setText] = useState({});
     const [cardName, setCardName] = useState('未命名卡片');
-
-    // const canvasInit = new fabric.Canvas('c', {
-    //     backgroundColor: '#fff',
-    //     width: 400,
-    //     height: 600,
-    // });
-
-    // const innerCanvasInit = new fabric.Canvas('i', {
-    //     backgroundColor: '#fff',
-    //     width: 400,
-    //     height: 600,
-    // });
 
     useEffect(() => {
         //new
@@ -258,7 +246,7 @@ const EditPage = (props) => {
                 snapshotInit,
                 cardNameInit
             ) => {
-                setCardData(coverDataInit);
+                // setCardData(coverDataInit);
                 const canvasInit = new fabric.Canvas('c', {
                     backgroundColor: '#fff',
                     width: 400,
