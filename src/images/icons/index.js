@@ -8,6 +8,7 @@ import editIcon from './edit-icon.svg';
 import saveIcon from './save-icon.svg';
 import viewIcon from './view-icon.svg';
 import mailIcon from './mail-icon.svg';
+import mailWhiteIcon from './mail-white-icon.svg';
 import backIcon from './back-icon.svg';
 import templateIcon from './template-icon.svg';
 import cardIcon from './card-icon.svg';
@@ -15,6 +16,7 @@ import leftIcon from './left-arrow-icon.svg';
 import rightIcon from './right-arrow-icon.svg';
 import cards from './cards.svg';
 import recCards from './rec-cards.svg';
+import paperAirplane from './paper-airplane-icon.svg';
 
 export {
     backgroundIcon,
@@ -27,6 +29,7 @@ export {
     saveIcon,
     viewIcon,
     mailIcon,
+    mailWhiteIcon,
     backIcon,
     templateIcon,
     cardIcon,
@@ -34,4 +37,5 @@ export {
     rightIcon,
     cards,
     recCards,
+    paperAirplane,
 };

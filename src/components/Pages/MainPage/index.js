@@ -10,10 +10,9 @@ import {
     navToPreviewCard,
 } from '../../../Utils/firebase';
 import { logo } from '../../../images/index';
-import { defaultImg } from '../../../images/default';
-import { profileLoading } from '../../../images/loading';
 import { background } from '../../../images/background';
-import CardsRowTest from './CardRowTest';
+import CardsRow from './CardRow';
+import Profile from '../../Profile';
 
 const Nav = styled.nav`
     position: fixed;
@@ -39,9 +38,9 @@ const Logo = styled.img`
 `;
 
 const CreateNewCardBtn = styled.div`
-    width: 100px;
+    width: 110px;
     height: 30px;
-    border: 1px solid #172f2f;
+    /* border: 1px solid #172f2f; */
     border-radius: 5px;
     margin-right: 24px;
     margin-left: auto;
@@ -49,11 +48,13 @@ const CreateNewCardBtn = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    background-color: #172f2f;
+    color: #172f2f;
+    background-color: white;
+    box-shadow: 0 0 2px #172f2f;
     :hover {
         cursor: pointer;
         background-color: #996633;
+        color: white;
         border-color: #996633;
     }
 `;
@@ -82,67 +83,6 @@ const MainContainer = styled.div`
     width: 100%;
 `;
 
-const MainProfile = styled.div`
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    flex-direction: column;
-    width: 330px;
-    height: 100vh;
-    background-color: #172f2f;
-    align-items: center;
-`;
-
-const MainProfileName = styled.div`
-    display: flex;
-    width: 200px;
-    margin-top: 30px;
-    padding-left: 20px;
-    font-size: 20px;
-    color: white;
-`;
-
-const MainProfileMail = styled(MainProfileName)`
-    font-size: 14px;
-    margin-bottom: 30px;
-`;
-
-const MainProfileImg = styled.img`
-    margin-top: 120px;
-    width: 200px;
-    border-radius: 10px;
-`;
-
-const ProfileLoadingContainer = styled.div`
-    display: flex;
-    width: 100%;
-    height: 139px;
-    align-items: center;
-    justify-content: center;
-`;
-
-const ProfileLoadingImg = styled.img`
-    width: 80px;
-`;
-
-const SendMailBtn = styled.div`
-    width: 200px;
-    height: 40px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    color: white;
-    background-color: #996633;
-    :hover {
-        cursor: pointer;
-        color: #996633;
-        background-color: #fff;
-    }
-`;
-
 const MainCards = styled.div`
     display: flex;
     flex-direction: column;
@@ -151,17 +91,14 @@ const MainCards = styled.div`
     /* background-color: #f9f2ec; */
     box-shadow: inset 0 0 15px #b6b6b6;
     margin-top: 80px;
-    margin-left: 330px;
-    width: calc(100% - 330px);
+    margin-left: 300px;
+    width: calc(100% - 300px);
     z-index: 0;
     padding-bottom: 40px;
 `;
 
 const MainPage = (props) => {
     const history = useHistory();
-    const [profileName, setProfileName] = useState('');
-    const [profileEmail, setProfileEmail] = useState('');
-    const [profilePhoto, setProfilePhoto] = useState('');
 
     const handleCreateNewCard = () => {
         const cardDetails = {
@@ -201,19 +138,6 @@ const MainPage = (props) => {
     //     }
     // }, [onHoverCard]);
 
-    useEffect(() => {
-        if (props.currentUser && props.currentUser.email === 'noUser') {
-            history.push('/');
-        } else if (props.currentUser.email) {
-            getDataForProfile(
-                props.currentUser.email,
-                setProfileName,
-                setProfileEmail,
-                setProfilePhoto
-            );
-        }
-    }, [props.currentUser]);
-
     // useEffect(() => {
     //     subscribe(setImgArr, props.currentUser.email);
     // }, [setImgArr, props.currentUser.email]);
@@ -225,12 +149,17 @@ const MainPage = (props) => {
                     <Logo src={logo} />
                 </LogoAnchor>
                 <CreateNewCardBtn onClick={handleCreateNewCard}>
-                    新增卡片
+                    + 新增卡片
                 </CreateNewCardBtn>
                 <Logout onClick={handleLogout}>登出</Logout>
             </Nav>
             <MainContainer>
-                <MainProfile>
+                <Profile
+                    currentUser={props.currentUser}
+                    setCurrentUser={props.setCurrentUser}
+                    {...props}
+                />
+                {/* <MainProfile>
                     <MainProfileImg
                         src={profilePhoto === '' ? defaultImg : profilePhoto}
                     ></MainProfileImg>
@@ -247,15 +176,15 @@ const MainPage = (props) => {
                     <SendMailBtn onClick={navToSendCardPage}>
                         我要寄信
                     </SendMailBtn>
-                </MainProfile>
+                </MainProfile> */}
                 <MainCards>
-                    <CardsRowTest
+                    <CardsRow
                         currentUser={props.currentUser}
                         setCurrentUser={props.setCurrentUser}
                         type={'myCard'}
                         {...props}
                     />
-                    <CardsRowTest
+                    <CardsRow
                         currentUser={props.currentUser}
                         setCurrentUser={props.setCurrentUser}
                         type={'recCard'}

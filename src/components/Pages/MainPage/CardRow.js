@@ -1,28 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+import useWindowSize from '../../../Hooks/useWindowSize';
 import {
     navToEditCard,
     deleteCard,
-    navToPreviewCard,
     mapDataForExplore,
     mapExampleDataForExplore,
+    getAllSnapshots,
 } from '../../../Utils/firebase';
+import { mainLoading } from '../../../images/loading';
 import { cards, recCards, viewIcon, deleteIcon } from '../../../images/icons';
+import styled from 'styled-components';
+import Modal from 'react-modal';
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/components/navigation/navigation.min.css';
 import 'swiper/components/pagination/pagination.min.css';
 import 'swiper/swiper.min.css';
 import './Swiper.css';
-import useWindowSize from '../../../Hooks/useWindowSize';
-import { mainLoading } from '../../../images/loading';
-
 import SwiperCore, {
     Navigation,
     Pagination,
     Mousewheel,
     Keyboard,
 } from 'swiper/core';
+
 SwiperCore.use([Navigation, Pagination, Mousewheel, Keyboard]);
 
 const swiperStyle = {
@@ -155,16 +157,92 @@ const LoadingImg = styled.img`
     width: 80px;
 `;
 
+Modal.setAppElement('#root');
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: '#3f3a3a',
+        height: '400px',
+        width: '600px',
+        zIndex: 10,
+        borderRadius: '8px',
+    },
+};
+
+// preview card
+const PreviewAreaEmtpyWarning = styled.div`
+    font-size: 18px;
+    color: #172f2f;
+`;
+
+// 卡片預覽
+const Card = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: ${(props) =>
+        props.cardOpend ? 'translate(0, -50%)' : 'translate(-50%, -50%)'};
+    width: 180px;
+    height: 270px;
+    /* background-image: url('https://images.unsplash.com/photo-1467043237213-65f2da53396f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2134&q=80'); */
+    background-image: ${(props) => `url('${props.snapshot}')`};
+    background-size: cover;
+    background-position: center;
+    perspective: 3000px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    transition: 0.5s;
+`;
+
+const Cover = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /* box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.3); */
+    transform: rotateY(0);
+    transform-origin: left;
+    transform-style: preserve-3d;
+    transition: 0.5s;
+    transform: ${(props) =>
+        props.cardOpend ? 'rotateY(-150deg)' : 'rotateY(0deg)'};
+`;
+
+const Content = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+`;
+
+const LeftContent = styled(Content)`
+    /* background-image: url('https://images.unsplash.com/photo-1554568218-0f1715e72254?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'); */
+    background-image: ${(props) => `url('${props.snapshot}')`};
+    background-size: cover;
+    background-position: center;
+`;
+
+const RightContent = styled(Content)`
+    background-color: white;
+    transform: rotateY(180deg);
+    background-image: ${(props) => `url('${props.snapshot}')`};
+    background-size: cover;
+    background-position: center;
+`;
+
 const CardsRow = (props) => {
     const history = useHistory();
     const size = useWindowSize();
-    // const scrollRef = useRef([]);
     const [imgArr, setImgArr] = useState([]);
     const [sampleImgArr, setSampleImgArr] = useState([]);
     const [onHover, setOnHover] = useState(false);
     const [onHoverCard, setOnHoverCard] = useState('');
     const [showCardDetails, setShowCardDetails] = useState(false);
     const [slidesPerView, setSlidesPerView] = useState(null);
+    const [modalIsOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         props.setCurrentUser({ email: props.match.params.id });
@@ -201,6 +279,40 @@ const CardsRow = (props) => {
     const handleEditExistCard = (e) => {
         navToEditCard(e.target.dataset.id);
     };
+
+    const openModal = () => {
+        setIsOpen(true);
+    };
+
+    const afterOpenModal = () => {
+        console.log('do something');
+    };
+
+    const closeModal = () => {
+        setIsOpen(false);
+    };
+
+    // preview card
+    const [cardId, setCardId] = useState('');
+    const [cardOpend, setCardOpened] = useState(false);
+    const [coverSnapshot, setCoverSnapshot] = useState('');
+    const [leftInnerSnapshot, setLeftInnerSnapshot] = useState('');
+    const [rightInnerSnapshot, setRightInnerSnapshot] = useState('');
+
+    const handleCardOpened = () => {
+        setCardOpened(!cardOpend);
+    };
+
+    useEffect(() => {
+        if (cardId !== '') {
+            getAllSnapshots(
+                cardId,
+                setCoverSnapshot,
+                setLeftInnerSnapshot,
+                setRightInnerSnapshot
+            );
+        }
+    }, [cardId]);
 
     return (
         <>
@@ -255,6 +367,7 @@ const CardsRow = (props) => {
                                                 setShowCardDetails(
                                                     !showCardDetails
                                                 );
+                                                setCardId(img.basicSetting.id);
                                             }}
                                         >
                                             . . .
@@ -264,10 +377,52 @@ const CardsRow = (props) => {
                                     onHoverCard === img.basicSetting.id &&
                                     showCardDetails ? (
                                         <CardDetailsBoard>
-                                            <CardDetailsBoardBtn>
+                                            <CardDetailsBoardBtn
+                                                onClick={openModal}
+                                            >
                                                 <WhiteBtn src={viewIcon} />
                                                 預覽
                                             </CardDetailsBoardBtn>
+                                            <Modal
+                                                isOpen={modalIsOpen}
+                                                onAfterOpen={afterOpenModal}
+                                                onRequestClose={closeModal}
+                                                style={customStyles}
+                                                contentLabel="Example Modal"
+                                            >
+                                                {cardId !== '' ? (
+                                                    <Card
+                                                        cardOpend={cardOpend}
+                                                        onClick={
+                                                            handleCardOpened
+                                                        }
+                                                        snapshot={
+                                                            rightInnerSnapshot
+                                                        }
+                                                    >
+                                                        <Cover
+                                                            cardOpend={
+                                                                cardOpend
+                                                            }
+                                                        >
+                                                            <RightContent
+                                                                snapshot={
+                                                                    leftInnerSnapshot
+                                                                }
+                                                            ></RightContent>
+                                                            <LeftContent
+                                                                snapshot={
+                                                                    coverSnapshot
+                                                                }
+                                                            ></LeftContent>
+                                                        </Cover>
+                                                    </Card>
+                                                ) : (
+                                                    <PreviewAreaEmtpyWarning>
+                                                        請先選擇卡片
+                                                    </PreviewAreaEmtpyWarning>
+                                                )}
+                                            </Modal>
                                             <CardDetailsBoardBtn
                                                 onClick={() => {
                                                     handleDeleteCard(
