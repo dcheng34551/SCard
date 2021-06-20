@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { paperAirplane } from '../../../images/icons';
+// import { paperAirplane } from '../../../images/icons';
 import {
     sendMail,
     getAllSnapshots,
@@ -182,13 +182,12 @@ const SendForm = (props) => {
     };
 
     useEffect(() => {
-        console.log('user', props);
         props.setCurrentUser({ email: props.match.params.id });
 
         mapDataForOptions(props.match.params.id).then((option) => {
             setOptions(option);
         });
-    }, []);
+    }, [props]);
 
     useEffect(() => {
         if (options.length > 0) {

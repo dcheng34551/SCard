@@ -169,7 +169,7 @@ const ShowPage = (props) => {
     useEffect(() => {
         setCardId(props.match.params.cardId);
         getCardUser(props.match.params.cardId, setCardAuthor);
-    }, []);
+    }, [props]);
 
     useEffect(() => {
         if (cardId !== '') {

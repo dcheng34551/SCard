@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import useWindowSize from '../../../Hooks/useWindowSize';
 import {
     navToEditCard,
@@ -29,7 +28,7 @@ SwiperCore.use([Navigation, Pagination, Mousewheel, Keyboard]);
 
 const swiperStyle = {
     marginTop: '20px',
-    width: '100%',
+    width: 'calc(100% - 48px)',
     height: '330px',
     borderRadius: '8px',
     padding: '20px 24px',
@@ -42,7 +41,6 @@ const RowContainer = styled.div`
     flex-direction: column;
     width: 80%;
     /* margin-top: 20px; */
-    margin-right: 2%;
     position: relative;
 `;
 
@@ -190,7 +188,6 @@ const Card = styled.div`
         props.cardOpend ? 'translate(0, -50%)' : 'translate(-50%, -50%)'};
     width: 180px;
     height: 270px;
-    /* background-image: url('https://images.unsplash.com/photo-1467043237213-65f2da53396f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2134&q=80'); */
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
@@ -219,7 +216,6 @@ const Content = styled.div`
 `;
 
 const LeftContent = styled(Content)`
-    /* background-image: url('https://images.unsplash.com/photo-1554568218-0f1715e72254?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'); */
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
@@ -234,7 +230,6 @@ const RightContent = styled(Content)`
 `;
 
 const CardsRow = (props) => {
-    const history = useHistory();
     const size = useWindowSize();
     const [imgArr, setImgArr] = useState([]);
     const [sampleImgArr, setSampleImgArr] = useState([]);
@@ -256,15 +251,13 @@ const CardsRow = (props) => {
                 setSampleImgArr(card);
             });
         }
-    }, []);
+    }, [props]);
 
     useEffect(() => {
         if (size.width >= 1000) {
             setSlidesPerView(4);
-            console.log('more');
         } else if (size.width >= 700) {
             setSlidesPerView(2);
-            console.log('less');
         }
     }, [size]);
 
@@ -323,10 +316,6 @@ const CardsRow = (props) => {
                     />
                     {props.type === 'myCard' ? '我的卡片' : '為您推薦'}
                 </RowTitle>
-
-                {/* <SwiperSlide>1</SwiperSlide>
-                    <SwiperSlide>2</SwiperSlide>
-                    <SwiperSlide>3</SwiperSlide> */}
                 {props.type === 'myCard' && JSON.stringify(imgArr) !== '[]' ? (
                     <Swiper
                         slidesPerView={slidesPerView}

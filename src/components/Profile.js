@@ -90,7 +90,7 @@ const Profile = (props) => {
                 setProfilePhoto
             );
         }
-    }, [props.currentUser]);
+    }, [props.currentUser, history]);
 
     const navToSendCardPage = () => {
         navToSendCard(props.currentUser.email);

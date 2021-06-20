@@ -298,7 +298,7 @@ const EditPage = (props) => {
             }
         );
         setCardId(props.match.params.cardId);
-    }, []);
+    }, [props.match.params.cardId]);
 
     // useEffect(() => {
     //     // console.log(`this is ${cardId}`);

@@ -20,14 +20,9 @@ export const uploadImageToStorage = (fileList, userId, callback) => {
     const storageRef = firebase.storage().ref();
     const ImgRef = storageRef.child(`uploadedImgs/${imgId}`);
     const task = ImgRef.put(fileList[0]);
-    // task.then((snapshot) => {
-    //     console.log('Uploaded a file');
-    // });
     task.on(
         'state_changed',
-        (snapshot) => {
-            console.log('Uploaded a file');
-        },
+        (snapshot) => {},
         (err) => {},
         () => {
             ImgRef.getDownloadURL().then((url) => {
@@ -45,11 +40,6 @@ export const uploadImageToStorage = (fileList, userId, callback) => {
             });
         }
     );
-};
-
-export const showData = () => {
-    const ref = usersDb.doc('Fn5WOPtQ9DRYLSrCflzn');
-    console.log(ref);
 };
 
 export const showUploadedImages = (setUploadedImages, userId) => {
@@ -119,15 +109,13 @@ export const nativeSignup = (name, email, password) => {
                 email,
                 cards: [],
                 uploadedImages: [],
-            }).then(() => {
-                console.log('成功註冊!!!');
-            });
+            }).then(() => {});
         })
         .catch((err) => {
             if (err.code === 'auth/email-already-in-use') {
-                console.log('此帳號已註冊');
+                window.alert('此帳號已註冊');
             } else {
-                console.log('密碼需要大於6個字元');
+                window.alert('密碼需要大於6個字元');
             }
         });
 };
@@ -371,11 +359,11 @@ export const mapDataForExplore = (userId) => {
 //     });
 //     return unsubscribe;
 // };
-export const subscribe = (userId) => {
-    usersDb.doc(userId).onSnapshot((doc) => {
-        console.log(doc.data().cards);
-    });
-};
+// export const subscribe = (userId) => {
+//     usersDb.doc(userId).onSnapshot((doc) => {
+//         console.log(doc.data().cards);
+//     });
+// };
 
 export const mapExampleDataForExplore = () => {
     return cardsDb.get().then((snapshot) => {

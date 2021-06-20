@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
-import {
-    nativeLogout,
-    createNewCard,
-    navToSendCard,
-    getDataForProfile,
-    navToPreviewCard,
-} from '../../../Utils/firebase';
+import { nativeLogout, createNewCard } from '../../../Utils/firebase';
 import { logo } from '../../../images/index';
 import { background } from '../../../images/background';
 import CardsRow from './CardRow';
@@ -98,8 +91,6 @@ const MainCards = styled.div`
 `;
 
 const MainPage = (props) => {
-    const history = useHistory();
-
     const handleCreateNewCard = () => {
         const cardDetails = {
             id: uuidv4(),
@@ -110,14 +101,6 @@ const MainPage = (props) => {
     const handleLogout = () => {
         nativeLogout();
         props.setCurrentUser({ email: 'noUser' });
-    };
-
-    const navToSendCardPage = () => {
-        navToSendCard(props.currentUser.email);
-    };
-
-    const navToShowCardPage = (e) => {
-        navToPreviewCard(e.target.dataset.id);
     };
 
     // const openModal = () => {

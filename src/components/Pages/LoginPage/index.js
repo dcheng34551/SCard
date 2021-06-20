@@ -116,7 +116,6 @@ const LoginPage = (props) => {
         e.preventDefault();
         await nativeSignup(signupName, signupEmail, signupPassword);
         props.setCurrentUser(signupEmail);
-        console.log(props.currentUser);
         setSignupName('');
         setSignupEmail('');
         setSignupPassword('');
@@ -137,14 +136,10 @@ const LoginPage = (props) => {
     };
 
     useEffect(() => {
-        console.log(props.currentUser);
-    }, []);
-
-    useEffect(() => {
         if (props.currentUser.email && props.currentUser.email !== 'noUser') {
             history.push(`/main/${props.currentUser.email}`);
         }
-    }, [props.currentUser]);
+    }, [props.currentUser, history]);
 
     return (
         <>

@@ -39,7 +39,6 @@ const NavText = (props) => {
 
     const changeTextFont = (e) => {
         if (props.canvas.getActiveObject()) {
-            console.log(e.target.value);
             props.canvas.getActiveObject().set({ fontFamily: e.target.value });
             props.canvas.requestRenderAll();
         }

@@ -12,22 +12,15 @@ import './Utils/firebase';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({ email: null });
-    const [currentUserTimes, setCurrentUserTimes] = useState(0);
 
     useEffect(() => {
         setCurrentUser(currentUser);
-        console.log(currentUser);
     }, [currentUser]);
 
     useEffect(() => {
-        if (currentUserTimes === 0) {
-            firebase.auth().onAuthStateChanged((user) => {
-                user
-                    ? setCurrentUser(user)
-                    : setCurrentUser({ email: 'noUser' });
-            });
-            setCurrentUserTimes(1);
-        }
+        firebase.auth().onAuthStateChanged((user) => {
+            user ? setCurrentUser(user) : setCurrentUser({ email: 'noUser' });
+        });
     }, []);
 
     return (
