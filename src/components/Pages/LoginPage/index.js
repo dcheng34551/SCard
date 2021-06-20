@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { nativeSignup, nativeLogin } from '../../../Utils/firebase';
 import { useHistory } from 'react-router-dom';
-import { logo } from '../../../images/index';
+import Header from '../../Header';
 
 const FieldForm = styled.form`
     display: flex;
@@ -11,6 +11,11 @@ const FieldForm = styled.form`
     padding: 30px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 5px;
+
+    @media (max-width: 540px) {
+        width: 280px;
+        padding: 20px;
+    }
 `;
 
 const FieldTitle = styled.p`
@@ -18,6 +23,10 @@ const FieldTitle = styled.p`
     font-size: 36px;
     margin-top: 0;
     margin-bottom: 0;
+
+    @media (max-width: 540px) {
+        font-size: 32px;
+    }
 `;
 
 const FieldSub = styled.p`
@@ -25,6 +34,10 @@ const FieldSub = styled.p`
     font-size: 16px;
     margin-top: 18px;
     margin-bottom: 0;
+
+    @media (max-width: 540px) {
+        font-size: 14px;
+    }
 `;
 
 const FieldInput = styled.input`
@@ -37,6 +50,10 @@ const FieldInput = styled.input`
     padding: 0;
     text-indent: 10px;
     align-self: center;
+
+    @media (max-width: 540px) {
+        margin-top: 16px;
+    }
 `;
 
 const FieldBtn = styled.input`
@@ -53,6 +70,11 @@ const FieldBtn = styled.input`
         cursor: pointer;
         background-color: #996633;
         border: 1px solid #996633;
+    }
+
+    @media (max-width: 540px) {
+        margin-top: 20px;
+        font-size: 16px;
     }
 `;
 
@@ -71,22 +93,6 @@ const SignupChangeTag = styled.div`
         color: #e6ccb3;
         cursor: pointer;
     }
-`;
-
-const Nav = styled.nav`
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    width: 100%;
-    height: 80px;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-`;
-
-const Logo = styled.img`
-    width: 110px;
-    margin-left: 30px;
 `;
 
 const Body = styled.div`
@@ -143,10 +149,11 @@ const LoginPage = (props) => {
 
     return (
         <>
-            <Nav>
-                <Logo src={logo} />
-            </Nav>
-
+            <Header
+                currentUser={props.currentUser}
+                setCurrentUser={props.setCurrentUser}
+                type="landing"
+            />
             <Body>
                 {signupOrLogin ? (
                     <FieldForm onSubmit={handleSignup}>

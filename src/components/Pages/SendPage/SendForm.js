@@ -10,12 +10,17 @@ import {
 const MainSendingForm = styled.form`
     display: flex;
     flex-direction: column;
-    width: 800px;
+    max-width: 800px;
+    width: 80%;
     height: 620px;
     background-color: #f3f3f3;
     border-radius: 5px;
     box-shadow: inset 0 0 5px #898989;
     align-items: center;
+
+    @media (max-width: 540px) {
+        height: 520px;
+    }
 `;
 
 const MainSendingFormTitleContainer = styled.div`
@@ -34,6 +39,10 @@ const MainSendingFormTitle = styled.div`
     width: 80%;
     font-size: 20px;
     color: #fff;
+
+    @media (max-width: 960px) {
+        font-size: 18px;
+    }
 `;
 
 const InputContainer = styled.div`
@@ -41,19 +50,34 @@ const InputContainer = styled.div`
     align-items: center;
     width: 80%;
     margin-top: 10px;
+
+    @media (max-width: 960px) {
+        margin-top: 8px;
+    }
 `;
 
 const MainSendingFormLabel = styled.label`
     font-size: 18px;
     margin-right: 20px;
     width: 80px;
+
+    @media (max-width: 960px) {
+        font-size: 16px;
+        margin-right: 16px;
+    }
 `;
 
 const MainSendingCardSelect = styled.select`
-    width: 30%;
+    width: 40%;
     height: 30px;
     text-indent: 20px;
     font-size: 18px;
+    border-radius: 5px;
+    @media (max-width: 960px) {
+        text-indent: 8px;
+        font-size: 14px;
+        height: 24px;
+    }
 `;
 
 const MainSendingFormInput = styled.input`
@@ -64,18 +88,32 @@ const MainSendingFormInput = styled.input`
     font-size: 18px;
     color: black;
     border-radius: 5px;
+
+    @media (max-width: 960px) {
+        text-indent: 8px;
+        font-size: 14px;
+        height: 24px;
+    }
 `;
 
 const PreviewContainer = styled.div`
     display: flex;
     width: 80%;
     margin-top: 10px;
+
+    @media (max-width: 960px) {
+        flex-direction: column;
+    }
 `;
 
 const PreviewTitle = styled.div`
     font-size: 18px;
     margin-right: 20px;
     width: 80px;
+
+    @media (max-width: 960px) {
+        font-size: 16px;
+    }
 `;
 
 const PreviewArea = styled.div`
@@ -88,6 +126,15 @@ const PreviewArea = styled.div`
     align-items: center;
     position: relative;
     background-color: gray;
+
+    @media (max-width: 960px) {
+        margin-top: 12px;
+        width: 100%;
+    }
+
+    @media (max-width: 540px) {
+        height: 200px;
+    }
 `;
 
 const PreviewAreaEmtpyWarning = styled.div`
@@ -103,20 +150,28 @@ const Card = styled.div`
         props.cardOpend ? 'translate(0, -50%)' : 'translate(-50%, -50%)'};
     width: 180px;
     height: 270px;
-    /* background-image: url('https://images.unsplash.com/photo-1467043237213-65f2da53396f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2134&q=80'); */
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
     perspective: 3000px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
     transition: 0.5s;
+
+    @media (max-width: 1200px) {
+        width: 144px;
+        height: 216px;
+    }
+
+    @media (max-width: 540px) {
+        width: 108px;
+        height: 162px;
+    }
 `;
 
 const Cover = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    /* box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.3); */
     transform: rotateY(0);
     transform-origin: left;
     transform-style: preserve-3d;
@@ -132,7 +187,6 @@ const Content = styled.div`
 `;
 
 const LeftContent = styled(Content)`
-    /* background-image: url('https://images.unsplash.com/photo-1554568218-0f1715e72254?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'); */
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
@@ -158,6 +212,11 @@ const SubmitBtn = styled.input`
     :hover {
         cursor: pointer;
         background-color: #996633;
+    }
+
+    @media (max-width: 960px) {
+        font-size: 16px;
+        margin-top: 16px;
     }
 `;
 

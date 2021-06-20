@@ -36,11 +36,20 @@ const swiperStyle = {
     boxShadow: 'inset 0 0 5px #898989',
 };
 
+const smallSwiperStyle = {
+    marginTop: '20px',
+    width: 'calc(100% - 48px)',
+    height: '290px',
+    borderRadius: '8px',
+    padding: '20px 24px',
+    backgroundColor: '#f3f3f3',
+    boxShadow: 'inset 0 0 5px #898989',
+};
+
 const RowContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 80%;
-    /* margin-top: 20px; */
     position: relative;
 `;
 
@@ -49,11 +58,20 @@ const RowTitle = styled.div`
     display: flex;
     font-size: 24px;
     color: #172f2f;
+
+    @media (max-width: 768px) {
+        margin-top: 20px;
+        font-size: 20px;
+    }
 `;
 
 const RowTitleIcon = styled.img`
     width: 40px;
     margin-right: 10px;
+
+    @media (max-width: 768px) {
+        width: 32px;
+    }
 `;
 
 const CardContainer = styled.div`
@@ -70,6 +88,12 @@ const CardContainer = styled.div`
     :hover {
         cursor: pointer;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        max-width: 160px;
+        min-width: 160px;
+        height: 260px;
     }
 `;
 
@@ -91,6 +115,14 @@ const CardDetails = styled.div`
         opacity: 0.95;
         box-shadow: 0 0 5px #172f2f;
     }
+
+    @media (max-width: 768px) {
+        top: 8px;
+        right: 8px;
+        width: 36px;
+        height: 28px;
+        line-height: 1;
+    }
 `;
 
 const CardDetailsBoard = styled.div`
@@ -108,6 +140,13 @@ const CardDetailsBoard = styled.div`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     background-color: white;
     color: black;
+
+    @media (max-width: 768px) {
+        top: 44px;
+        right: 8px;
+        line-height: 1;
+        width: 68px;
+    }
 `;
 
 const CardDetailsBoardBtn = styled.div`
@@ -115,14 +154,23 @@ const CardDetailsBoardBtn = styled.div`
     align-items: center;
     justify-content: space-around;
     height: 28px;
-    width: 80px;
+    width: 100%;
+    font-size: 16px;
     :hover {
         background-color: #f0eefe;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 14px;
     }
 `;
 
 const WhiteBtn = styled.img`
     width: 16px;
+
+    @media (max-width: 768px) {
+        width: 14px;
+    }
 `;
 
 const CardImg = styled.img`
@@ -134,6 +182,11 @@ const CardImg = styled.img`
     :hover {
         cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+        width: 138px;
+        height: 208px;
+    }
 `;
 
 const CardName = styled.div`
@@ -141,6 +194,11 @@ const CardName = styled.div`
     margin-top: 10px;
     color: #292522;
     text-shadow: 0 1.4px 1px #fff;
+
+    @media (max-width: 768px) {
+        margin-top: 8px;
+        font-size: 14px;
+    }
 `;
 
 const LoadingRow = styled.div`
@@ -165,9 +223,24 @@ const customStyles = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
-        backgroundColor: '#3f3a3a',
+        backgroundColor: '#172a2a',
         height: '400px',
         width: '600px',
+        zIndex: 10,
+        borderRadius: '8px',
+    },
+};
+
+const customSmallStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        height: '360px',
+        width: '340px',
         zIndex: 10,
         borderRadius: '8px',
     },
@@ -194,6 +267,7 @@ const Card = styled.div`
     perspective: 3000px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
     transition: 0.5s;
+    background-color: #fff;
 `;
 
 const Cover = styled.div`
@@ -205,6 +279,7 @@ const Cover = styled.div`
     transform-origin: left;
     transform-style: preserve-3d;
     transition: 0.5s;
+    background-color: '#fff';
     transform: ${(props) =>
         props.cardOpend ? 'rotateY(-150deg)' : 'rotateY(0deg)'};
 `;
@@ -213,6 +288,7 @@ const Content = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
+    background-color: '#fff';
 `;
 
 const LeftContent = styled(Content)`
@@ -227,6 +303,23 @@ const RightContent = styled(Content)`
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
+`;
+
+const ModalCloseBtn = styled.div`
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    /* background-color: '#e1dad4'; */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    line-height: 1.3;
+
+    :hover {
+        cursor: pointer;
+    }
 `;
 
 const CardsRow = (props) => {
@@ -254,10 +347,16 @@ const CardsRow = (props) => {
     }, [props]);
 
     useEffect(() => {
-        if (size.width >= 1000) {
+        if (size.width >= 1500) {
             setSlidesPerView(4);
-        } else if (size.width >= 700) {
+        } else if (size.width >= 1000) {
+            setSlidesPerView(3);
+        } else if (size.width >= 768) {
+            setSlidesPerView(1);
+        } else if (size.width >= 540) {
             setSlidesPerView(2);
+        } else {
+            setSlidesPerView(1);
         }
     }, [size]);
 
@@ -316,11 +415,51 @@ const CardsRow = (props) => {
                     />
                     {props.type === 'myCard' ? '我的卡片' : '為您推薦'}
                 </RowTitle>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onAfterOpen={afterOpenModal}
+                    onRequestClose={closeModal}
+                    style={size.width >= 768 ? customStyles : customSmallStyles}
+                    contentLabel="Example Modal"
+                >
+                    {cardId !== '' ? (
+                        <>
+                            <ModalCloseBtn
+                                onClick={closeModal}
+                                style={{
+                                    backgroundColor: '#e1dad4',
+                                }}
+                            >
+                                x
+                            </ModalCloseBtn>
+                            <Card
+                                cardOpend={cardOpend}
+                                onClick={handleCardOpened}
+                                snapshot={rightInnerSnapshot}
+                            >
+                                <Cover cardOpend={cardOpend}>
+                                    <RightContent
+                                        snapshot={leftInnerSnapshot}
+                                    ></RightContent>
+                                    <LeftContent
+                                        snapshot={coverSnapshot}
+                                    ></LeftContent>
+                                </Cover>
+                            </Card>
+                        </>
+                    ) : (
+                        <PreviewAreaEmtpyWarning>
+                            請先選擇卡片
+                        </PreviewAreaEmtpyWarning>
+                    )}
+                </Modal>
                 {props.type === 'myCard' && JSON.stringify(imgArr) !== '[]' ? (
                     <Swiper
                         slidesPerView={slidesPerView}
-                        spaceBetween={30}
-                        style={swiperStyle}
+                        spaceBetween={size.width >= 768 ? 30 : 20}
+                        style={
+                            size.width >= 768 ? swiperStyle : smallSwiperStyle
+                        }
                         navigation={true}
                         mousewheel={true}
                         pagination={true}
@@ -372,46 +511,6 @@ const CardsRow = (props) => {
                                                 <WhiteBtn src={viewIcon} />
                                                 預覽
                                             </CardDetailsBoardBtn>
-                                            <Modal
-                                                isOpen={modalIsOpen}
-                                                onAfterOpen={afterOpenModal}
-                                                onRequestClose={closeModal}
-                                                style={customStyles}
-                                                contentLabel="Example Modal"
-                                            >
-                                                {cardId !== '' ? (
-                                                    <Card
-                                                        cardOpend={cardOpend}
-                                                        onClick={
-                                                            handleCardOpened
-                                                        }
-                                                        snapshot={
-                                                            rightInnerSnapshot
-                                                        }
-                                                    >
-                                                        <Cover
-                                                            cardOpend={
-                                                                cardOpend
-                                                            }
-                                                        >
-                                                            <RightContent
-                                                                snapshot={
-                                                                    leftInnerSnapshot
-                                                                }
-                                                            ></RightContent>
-                                                            <LeftContent
-                                                                snapshot={
-                                                                    coverSnapshot
-                                                                }
-                                                            ></LeftContent>
-                                                        </Cover>
-                                                    </Card>
-                                                ) : (
-                                                    <PreviewAreaEmtpyWarning>
-                                                        請先選擇卡片
-                                                    </PreviewAreaEmtpyWarning>
-                                                )}
-                                            </Modal>
                                             <CardDetailsBoardBtn
                                                 onClick={() => {
                                                     handleDeleteCard(
@@ -444,12 +543,13 @@ const CardsRow = (props) => {
                   JSON.stringify(sampleImgArr) !== '[]' ? (
                     <Swiper
                         slidesPerView={slidesPerView}
-                        spaceBetween={30}
-                        style={swiperStyle}
+                        spaceBetween={size.width >= 768 ? 30 : 20}
+                        style={
+                            size.width >= 768 ? swiperStyle : smallSwiperStyle
+                        }
                         navigation={true}
                         mousewheel={true}
                         pagination={true}
-                        // rebuildOnUpdate={true}
                     >
                         {sampleImgArr.map((img) => (
                             <SwiperSlide
@@ -481,6 +581,7 @@ const CardsRow = (props) => {
                                                 setShowCardDetails(
                                                     !showCardDetails
                                                 );
+                                                setCardId(img.basicSetting.id);
                                             }}
                                         >
                                             . . .
@@ -492,7 +593,9 @@ const CardsRow = (props) => {
                                         <CardDetailsBoard
                                             style={{ height: '30px' }}
                                         >
-                                            <CardDetailsBoardBtn>
+                                            <CardDetailsBoardBtn
+                                                onClick={openModal}
+                                            >
                                                 <WhiteBtn src={viewIcon} />
                                                 預覽
                                             </CardDetailsBoardBtn>

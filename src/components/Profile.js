@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { navToSendCard, getDataForProfile } from '../Utils/firebase';
+import {
+    navToSendCard,
+    getDataForProfile,
+    navToMainPage,
+} from '../Utils/firebase';
 import { defaultImg } from '../images/default';
 import { profileLoading } from '../images/loading';
 import { mailWhiteIcon } from '../images/icons';
@@ -16,6 +20,16 @@ const MainProfile = styled.div`
     height: 100vh;
     background-color: #172f2f;
     align-items: center;
+
+    @media (max-width: 768px) {
+        top: auto;
+        bottom: 0;
+        height: 60px;
+        width: 100%;
+        z-index: 2;
+        flex-direction: row;
+        justify-content: center;
+    }
 `;
 
 const MainProfileName = styled.div`
@@ -25,11 +39,19 @@ const MainProfileName = styled.div`
     padding-left: 20px;
     font-size: 20px;
     color: #e1dad4;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const MainProfileMail = styled(MainProfileName)`
     font-size: 14px;
     margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const MainProfileImg = styled.img`
@@ -38,6 +60,9 @@ const MainProfileImg = styled.img`
     padding: 13px;
     border: 2px solid #e1dad4;
     border-radius: 4px;
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const ProfileLoadingContainer = styled.div`
@@ -46,10 +71,18 @@ const ProfileLoadingContainer = styled.div`
     height: 139px;
     align-items: center;
     justify-content: center;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const ProfileLoadingImg = styled.img`
     width: 80px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const SendMailBtn = styled.div`
@@ -66,11 +99,21 @@ const SendMailBtn = styled.div`
         cursor: pointer;
         background-color: #c2bab4;
     }
+
+    @media (max-width: 768px) {
+        width: 140px;
+        font-size: 16px;
+        height: 36px;
+    }
 `;
 
 const SendMailBtnIcon = styled.img`
     width: 28px;
     margin-right: 20px;
+
+    @media (max-width: 768px) {
+        width: 24px;
+    }
 `;
 
 const Profile = (props) => {
@@ -96,6 +139,10 @@ const Profile = (props) => {
         navToSendCard(props.currentUser.email);
     };
 
+    const navToMainCardPage = () => {
+        navToMainPage(props.currentUser.email);
+    };
+
     return (
         <MainProfile>
             <MainProfileImg
@@ -111,10 +158,17 @@ const Profile = (props) => {
                     <ProfileLoadingImg src={profileLoading} />
                 </ProfileLoadingContainer>
             )}
-            <SendMailBtn onClick={navToSendCardPage}>
-                <SendMailBtnIcon src={mailWhiteIcon} alt="mail-icon" />
-                我要寄信
-            </SendMailBtn>
+            {props.type === 'main' ? (
+                <SendMailBtn onClick={navToSendCardPage}>
+                    <SendMailBtnIcon src={mailWhiteIcon} alt="mail-icon" />
+                    我要寄信
+                </SendMailBtn>
+            ) : (
+                <SendMailBtn onClick={navToMainCardPage}>
+                    <SendMailBtnIcon src={mailWhiteIcon} alt="mail-icon" />
+                    回到首頁
+                </SendMailBtn>
+            )}
         </MainProfile>
     );
 };
