@@ -74,6 +74,28 @@ const RowTitleIcon = styled.img`
     }
 `;
 
+const NoCardRow = styled.div`
+    width: 100%;
+    height: 330px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #f3f3f3;
+    box-shadow: inset 0 0 5px #898989;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const NoCardRowText = styled.p`
+    font-size: 20px;
+    color: #172a2a;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
 const CardContainer = styled.div`
     display: flex;
     position: relative;
@@ -331,6 +353,7 @@ const CardsRow = (props) => {
     const [showCardDetails, setShowCardDetails] = useState(false);
     const [slidesPerView, setSlidesPerView] = useState(null);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [hasFetchedData, setHasFetchedData] = useState(false);
 
     useEffect(() => {
         props.setCurrentUser({ email: props.match.params.id });
@@ -338,6 +361,7 @@ const CardsRow = (props) => {
         if (props.type === 'myCard') {
             mapDataForExplore(props.match.params.id).then((card) => {
                 setImgArr(card);
+                setHasFetchedData(true);
             });
         } else {
             mapExampleDataForExplore().then((card) => {
@@ -539,6 +563,17 @@ const CardsRow = (props) => {
                             </SwiperSlide>
                         ))}
                     </Swiper>
+                ) : props.type === 'myCard' &&
+                  JSON.stringify(imgArr) === '[]' &&
+                  hasFetchedData ? (
+                    <>
+                        <NoCardRow>
+                            <NoCardRowText>
+                                創造一張屬於你的卡片吧
+                            </NoCardRowText>
+                            <NoCardRowText>點擊右上角新增卡片</NoCardRowText>
+                        </NoCardRow>
+                    </>
                 ) : props.type === 'recCard' &&
                   JSON.stringify(sampleImgArr) !== '[]' ? (
                     <Swiper

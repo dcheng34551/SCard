@@ -109,7 +109,9 @@ export const nativeSignup = (name, email, password) => {
                 email,
                 cards: [],
                 uploadedImages: [],
-            }).then(() => {});
+            }).then(() => {
+                window.history.go(0);
+            });
         })
         .catch((err) => {
             if (err.code === 'auth/email-already-in-use') {
