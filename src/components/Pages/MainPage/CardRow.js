@@ -495,6 +495,7 @@ const CardsRow = (props) => {
                                     minWidth: '200px',
                                     maxWidth: '200px',
                                 }}
+                                key={img.basicSetting.id}
                             >
                                 <CardContainer
                                     data-id={img.basicSetting.id}
@@ -592,6 +593,7 @@ const CardsRow = (props) => {
                                     minWidth: '200px',
                                     maxWidth: '200px',
                                 }}
+                                key={img.basicSetting.id}
                             >
                                 <CardContainer
                                     data-id={img.basicSetting.id}
