@@ -12,10 +12,10 @@ const Body = styled.div`
   justify-content: center;
 `;
 
-const UndefinedPage = () => {
+const UndefinedPage = (props) => {
   return (
     <>
-      <Header></Header>
+      <Header currentUser={props.currentUser} {...props}></Header>
       <Body>
         <div style={{ fontSize: "72px" }}>404</div>
         <div style={{ fontSize: "24px" }}>此頁不存在...</div>

@@ -7,7 +7,7 @@ import LoginPage from "./components/Pages/LoginPage";
 import MainPage from "./components/Pages/MainPage";
 import ShowPage from "./components/Pages/ShowPage";
 import SendPage from "./components/Pages/SendPage";
-import UndefinedPage from "./components/Pages/undefinedPage";
+import UndefinedPage from "./components/Pages/UndefinedPage";
 import "./Utils/firebase";
 
 function App() {
