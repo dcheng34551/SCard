@@ -18,7 +18,7 @@ const UndefinedPage = (props) => {
       <Header currentUser={props.currentUser} {...props}></Header>
       <Body>
         <div style={{ fontSize: "72px" }}>404</div>
-        <div style={{ fontSize: "24px" }}>此頁不存在......</div>
+        <div style={{ fontSize: "24px" }}>此頁不存在...</div>
       </Body>
     </>
   );
