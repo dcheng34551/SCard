@@ -180,7 +180,7 @@ const Header = (props) => {
       }
     >
       <LogoAnchor href={`/main/${props.currentUser.email}`}>
-        <Logo src={logo} />
+        <Logo src={logo} className="test" />
       </LogoAnchor>
       {props.type === "main" ? (
         <>
