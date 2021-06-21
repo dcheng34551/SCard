@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import {
-    saveDataUrl,
-    navToPreviewCard,
-    navToSendCard,
-} from '../../../../../Utils/firebase';
 
 const Container = styled.div`
     width: 100%;

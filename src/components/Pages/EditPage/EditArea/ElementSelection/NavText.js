@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { ChromePicker } from 'react-color';
 // import 'fontfaceobserver';
@@ -39,7 +39,6 @@ const NavText = (props) => {
 
     const changeTextFont = (e) => {
         if (props.canvas.getActiveObject()) {
-            console.log(e.target.value);
             props.canvas.getActiveObject().set({ fontFamily: e.target.value });
             props.canvas.requestRenderAll();
         }
