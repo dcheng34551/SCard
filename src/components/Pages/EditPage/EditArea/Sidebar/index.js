@@ -5,7 +5,6 @@ import { ChromePicker } from 'react-color';
 // import firebase from 'firebase';
 import {
     uploadImageToStorage,
-    showData,
     showUploadedImages,
     deleteUploadedImage,
 } from '../../../../../Utils/firebase';

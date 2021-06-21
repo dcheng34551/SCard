@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { logo } from '../../../images/index';
 import {
     getAllSnapshots,
     navToEditCard,
     navToSendCard,
+    getCardUser,
 } from '../../../Utils/firebase';
-import { backIcon, mailIcon, editIcon } from '../../../images/icons';
+import { backIcon, mailIcon } from '../../../images/icons';
+import Header from '../../Header';
 
 const Nav = styled.nav`
     position: fixed;
@@ -85,9 +86,14 @@ const Body = styled.div`
     margin-top: 80px;
     width: 100vw;
     height: calc(100vh - 80px);
-    background-color: #f9f2ec;
-    box-shadow: inset 0 0 10px #b6b6b6;
+    background-color: gray;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
     position: relative;
+
+    @media (max-width: 768px) {
+        margin-top: 60px;
+        height: calc(100vh - 60px);
+    }
 `;
 
 const Card = styled.div`
@@ -98,16 +104,32 @@ const Card = styled.div`
         props.cardOpend ? 'translate(0, -50%)' : 'translate(-50%, -50%)'};
     width: 400px;
     height: 600px;
-    /* background-image: url('https://images.unsplash.com/photo-1467043237213-65f2da53396f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2134&q=80'); */
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
     perspective: 3000px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
     transition: 0.5s;
+    z-index: 5;
+    background-color: #fff;
 
     :hover {
         cursor: pointer;
+    }
+
+    @media (max-width: 960px) {
+        width: 360px;
+        height: 540px;
+    }
+
+    @media (max-width: 768px) {
+        width: 240px;
+        height: 360px;
+    }
+
+    @media (max-width: 540px) {
+        width: 168px;
+        height: 252px;
     }
 `;
 
@@ -115,11 +137,9 @@ const Cover = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    /* box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.3); */
-    transform: rotateY(0);
     transform-origin: left;
     transform-style: preserve-3d;
-    transition: 0.5s;
+    transition: all 0.5s;
     transform: ${(props) =>
         props.cardOpend ? 'rotateY(-150deg)' : 'rotateY(0deg)'};
 `;
@@ -128,21 +148,23 @@ const Content = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
+    background-color: white;
 `;
 
 const LeftContent = styled(Content)`
-    /* background-image: url('https://images.unsplash.com/photo-1554568218-0f1715e72254?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'); */
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
 `;
 
 const RightContent = styled(Content)`
-    background-color: white;
     transform: rotateY(180deg);
     background-image: ${(props) => `url('${props.snapshot}')`};
     background-size: cover;
     background-position: center;
+    transition: all 0.5s;
+    box-shadow: ${(props) =>
+        props.cardOpend ? '5px 5px 10px rgba(0, 0, 0, 0.2)' : 'none'};
 `;
 
 const ShowPage = (props) => {
@@ -151,6 +173,7 @@ const ShowPage = (props) => {
     const [coverSnapshot, setCoverSnapshot] = useState('');
     const [leftInnerSnapshot, setLeftInnerSnapshot] = useState('');
     const [rightInnerSnapshot, setRightInnerSnapshot] = useState('');
+    const [cardAuthor, setCardAuthor] = useState('');
 
     const handleCardOpened = () => {
         setCardOpened(!cardOpend);
@@ -166,7 +189,8 @@ const ShowPage = (props) => {
 
     useEffect(() => {
         setCardId(props.match.params.cardId);
-    }, []);
+        getCardUser(props.match.params.cardId, setCardAuthor);
+    }, [props]);
 
     useEffect(() => {
         if (cardId !== '') {
@@ -181,24 +205,29 @@ const ShowPage = (props) => {
 
     return (
         <>
-            <Nav>
+            <Header currentUser={props.currentUser} />
+            {/* <Nav>
                 <LogoAnchor href={`/main/${props.currentUser.email}`}>
                     <Logo src={logo} />
                 </LogoAnchor>
                 {props.currentUser.email &&
                 props.currentUser.email !== 'noUser' ? (
                     <ActionContainer>
-                        <EditBtn onClick={handleNavToEditCard}>
-                            <WhiteBtn src={backIcon} />
-                            繼續編輯
-                        </EditBtn>
-                        <SendBtn onClick={handleNavToSendCard}>
-                            <WhiteBtn src={mailIcon} />
-                            寄信
-                        </SendBtn>
+                        {cardAuthor === props.currentUser.email ? (
+                            <>
+                                <EditBtn onClick={handleNavToEditCard}>
+                                    <WhiteBtn src={backIcon} />
+                                    繼續編輯
+                                </EditBtn>
+                                <SendBtn onClick={handleNavToSendCard}>
+                                    <WhiteBtn src={mailIcon} />
+                                    寄信
+                                </SendBtn>
+                            </>
+                        ) : null}
                     </ActionContainer>
                 ) : null}
-            </Nav>
+            </Nav> */}
             <Body>
                 <Card
                     cardOpend={cardOpend}
@@ -208,8 +237,12 @@ const ShowPage = (props) => {
                     <Cover cardOpend={cardOpend}>
                         <RightContent
                             snapshot={leftInnerSnapshot}
+                            cardOpend={cardOpend}
                         ></RightContent>
-                        <LeftContent snapshot={coverSnapshot}></LeftContent>
+                        <LeftContent
+                            snapshot={coverSnapshot}
+                            cardOpend={cardOpend}
+                        ></LeftContent>
                     </Cover>
                 </Card>
             </Body>

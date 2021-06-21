@@ -4,7 +4,6 @@ import 'firebase/storage';
 import { firebaseConfig } from './firebaseConfig';
 import { v4 as uuidv4 } from 'uuid';
 import 'firebase/auth';
-import { fabric } from 'fabric';
 // import * as admin from 'firebase-admin';
 
 firebase.initializeApp(firebaseConfig);
@@ -21,14 +20,9 @@ export const uploadImageToStorage = (fileList, userId, callback) => {
     const storageRef = firebase.storage().ref();
     const ImgRef = storageRef.child(`uploadedImgs/${imgId}`);
     const task = ImgRef.put(fileList[0]);
-    // task.then((snapshot) => {
-    //     console.log('Uploaded a file');
-    // });
     task.on(
         'state_changed',
-        (snapshot) => {
-            console.log('Uploaded a file');
-        },
+        (snapshot) => {},
         (err) => {},
         () => {
             ImgRef.getDownloadURL().then((url) => {
@@ -40,17 +34,12 @@ export const uploadImageToStorage = (fileList, userId, callback) => {
                         id: imgId,
                     }),
                 }).then(() => {
-                    window.alert('上傳成功');
+                    window.alert('照片上傳成功');
                     callback();
                 });
             });
         }
     );
-};
-
-export const showData = () => {
-    const ref = usersDb.doc('Fn5WOPtQ9DRYLSrCflzn');
-    console.log(ref);
 };
 
 export const showUploadedImages = (setUploadedImages, userId) => {
@@ -121,14 +110,14 @@ export const nativeSignup = (name, email, password) => {
                 cards: [],
                 uploadedImages: [],
             }).then(() => {
-                console.log('成功註冊!!!');
+                window.history.go(0);
             });
         })
         .catch((err) => {
             if (err.code === 'auth/email-already-in-use') {
-                console.log('此帳號已註冊');
+                window.alert('此帳號已註冊');
             } else {
-                console.log('密碼需要大於6個字元');
+                window.alert('密碼需要大於6個字元');
             }
         });
 };
@@ -365,6 +354,19 @@ export const mapDataForExplore = (userId) => {
     });
 };
 
+// this problem
+// export const subscribe = (callback, userId) => {
+//     const unsubscribe = usersDb.doc(userId).onSnapshot((doc) => {
+//         callback(doc.data().cards);
+//     });
+//     return unsubscribe;
+// };
+// export const subscribe = (userId) => {
+//     usersDb.doc(userId).onSnapshot((doc) => {
+//         console.log(doc.data().cards);
+//     });
+// };
+
 export const mapExampleDataForExplore = () => {
     return cardsDb.get().then((snapshot) => {
         const cards = [];
@@ -393,6 +395,7 @@ export const changeCardName = (userId, cardId, newCardName) => {
                 } else {
                     newCardsArr.push(card);
                 }
+                return null;
             });
             userRef.update({ cards: newCardsArr });
         })
@@ -400,30 +403,47 @@ export const changeCardName = (userId, cardId, newCardName) => {
             window.alert('更新成功');
         });
 };
-// export const mapDataForExplore = (arr, callback) => {
-//     return cardsDb.get().then((querySnapshot) => {
-//         querySnapshot.forEach((doc) => {
-//             if (doc.data().snapshot) {
-//                 // callback([...arr, doc.data().snapshot]);
-//                 console.log(doc.data());
-//             }
-//         });
-//     });
+
+export const deleteCard = async (userId, cardId, callback) => {
+    const userRef = usersDb.doc(userId);
+    const cardRef = cardsDb.doc(cardId);
+    await cardRef.delete().then(() => {});
+    await userRef.get().then((doc) => {
+        userRef.update({
+            cards: doc.data().cards.filter((card) => card.id !== cardId),
+        });
+    });
+    callback();
+};
+
+// export const deleteCard = (userId, cardId, callback) => {
+//     const userRef = usersDb.doc(userId);
+//     const cardRef = cardsDb.doc(cardId);
+//     cardRef.delete().then(() => {});
+//     userRef
+//         .get()
+//         .then((doc) => {
+//             userRef.update({
+//                 cards: doc.data().cards.filter((card) => card.id !== cardId),
+//             });
+//         })
+//         .then(() => callback());
 // };
 
-// export const mapDataForExplore = (currentUserId, cards, allUsers) => {
-//     const cardsArr = [];
-//     cards.forEach((card) => {
-
-//     })
-// }
-
 // get personal profile
-export const getDataForProfile = (userId, setProfileName, setProfileEmail) => {
-    const userRef = usersDb.doc(userId);
+export const getDataForProfile = async (
+    userId,
+    setProfileName,
+    setProfileEmail,
+    setProfilePhoto
+) => {
+    const userRef = await usersDb.doc(userId);
     userRef.get().then((doc) => {
         setProfileName(doc.data().name);
         setProfileEmail(doc.data().email);
+        if (doc.data().profile) {
+            setProfilePhoto(doc.data().profile);
+        }
     });
 };
 
@@ -444,7 +464,7 @@ export const sendMail = (url, email, name, author) => {
             },
         })
         .then(() => {
-            window.alert('Email has been sent!!!');
+            window.alert('卡片已經寄出!!!');
         });
 };
 
@@ -472,5 +492,12 @@ export const getAllSnapshots = (
         setCoverSnapshot(doc.data().snapshot);
         setLeftInnerSnapshot(doc.data().leftInnerSnapshot);
         setRightInnerSnapshot(doc.data().rightInnerSnapshot);
+    });
+};
+
+export const getCardUser = (cardId, setCardUser) => {
+    const cardRef = cardsDb.doc(cardId);
+    cardRef.get().then((doc) => {
+        setCardUser(doc.data().author);
     });
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { nativeSignup, nativeLogin } from '../../../Utils/firebase';
 import { useHistory } from 'react-router-dom';
-import { logo } from '../../../images/index';
+import Header from '../../Header';
 
 const FieldForm = styled.form`
     display: flex;
@@ -11,6 +11,11 @@ const FieldForm = styled.form`
     padding: 30px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 5px;
+
+    @media (max-width: 540px) {
+        width: 280px;
+        padding: 20px;
+    }
 `;
 
 const FieldTitle = styled.p`
@@ -18,6 +23,10 @@ const FieldTitle = styled.p`
     font-size: 36px;
     margin-top: 0;
     margin-bottom: 0;
+
+    @media (max-width: 540px) {
+        font-size: 32px;
+    }
 `;
 
 const FieldSub = styled.p`
@@ -25,6 +34,10 @@ const FieldSub = styled.p`
     font-size: 16px;
     margin-top: 18px;
     margin-bottom: 0;
+
+    @media (max-width: 540px) {
+        font-size: 14px;
+    }
 `;
 
 const FieldInput = styled.input`
@@ -37,6 +50,10 @@ const FieldInput = styled.input`
     padding: 0;
     text-indent: 10px;
     align-self: center;
+
+    @media (max-width: 540px) {
+        margin-top: 16px;
+    }
 `;
 
 const FieldBtn = styled.input`
@@ -46,10 +63,18 @@ const FieldBtn = styled.input`
     align-self: center;
     font-size: 18px;
     color: white;
+    border-radius: 4px;
     background-color: #172f2f;
     border: 1px solid #172f2f;
     :hover {
         cursor: pointer;
+        background-color: #996633;
+        border: 1px solid #996633;
+    }
+
+    @media (max-width: 540px) {
+        margin-top: 20px;
+        font-size: 16px;
     }
 `;
 
@@ -63,27 +88,11 @@ const SignupChangeTag = styled.div`
     font-size: 14px;
     margin-left: 20px;
     color: #996633;
-    font-weight: bold;
+    /* font-weight: bold; */
     :hover {
         color: #e6ccb3;
         cursor: pointer;
     }
-`;
-
-const Nav = styled.nav`
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    width: 100%;
-    height: 80px;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-`;
-
-const Logo = styled.img`
-    width: 110px;
-    margin-left: 30px;
 `;
 
 const Body = styled.div`
@@ -106,18 +115,13 @@ const LoginPage = (props) => {
     const [signupName, setSignupName] = useState('');
     const [signupEmail, setSignupEmail] = useState('');
     const [signupPassword, setSignupPassword] = useState('');
-    const [loginEmail, setLoginEmail] = useState('');
-    const [loginPassword, setLoginPassword] = useState('');
+    const [loginEmail, setLoginEmail] = useState('test@test.com');
+    const [loginPassword, setLoginPassword] = useState('test123');
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        const asyncSignup = await nativeSignup(
-            signupName,
-            signupEmail,
-            signupPassword
-        );
+        await nativeSignup(signupName, signupEmail, signupPassword);
         props.setCurrentUser(signupEmail);
-        console.log(props.currentUser);
         setSignupName('');
         setSignupEmail('');
         setSignupPassword('');
@@ -125,7 +129,7 @@ const LoginPage = (props) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const aysncLogin = await nativeLogin(
+        await nativeLogin(
             loginEmail,
             loginPassword,
             () => {
@@ -138,21 +142,18 @@ const LoginPage = (props) => {
     };
 
     useEffect(() => {
-        console.log(props.currentUser);
-    }, []);
-
-    useEffect(() => {
         if (props.currentUser.email && props.currentUser.email !== 'noUser') {
             history.push(`/main/${props.currentUser.email}`);
         }
-    }, [props.currentUser]);
+    }, [props.currentUser, history]);
 
     return (
         <>
-            <Nav>
-                <Logo src={logo} />
-            </Nav>
-
+            <Header
+                currentUser={props.currentUser}
+                setCurrentUser={props.setCurrentUser}
+                type="landing"
+            />
             <Body>
                 {signupOrLogin ? (
                     <FieldForm onSubmit={handleSignup}>
