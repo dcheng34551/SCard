@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 
 const Container = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
 
 // const ActionContainer = styled.div`
@@ -62,25 +62,25 @@ const Container = styled.div`
 // `;
 
 const ChangeCanvasContainer = styled.div`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 const ChangeCanvasBtn = styled.button`
-    height: 24px;
-    width: 60px;
-    background-color: white;
-    border: 1px solid #996633;
-    border-radius: 4px;
-    color: #996633;
-    font-weight: bold;
-    margin-right: 10px;
-    margin-left: 10px;
-    line-height: 0.9;
-    font-size: 14px;
-    :hover {
-        cursor: pointer;
-    }
+  height: 24px;
+  width: 60px;
+  background-color: white;
+  border: 1px solid #996633;
+  border-radius: 4px;
+  color: #996633;
+  font-weight: bold;
+  margin-right: 10px;
+  margin-left: 10px;
+  line-height: 0.9;
+  font-size: 14px;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 // :hover {
@@ -91,95 +91,77 @@ const ChangeCanvasBtn = styled.button`
 // }
 
 const ActiveCanvasBtn = styled(ChangeCanvasBtn)`
-    color: white;
-    border: 1px solid #172f2f;
-    background-color: #172f2f;
+  color: white;
+  border: 1px solid #172f2f;
+  background-color: #172f2f;
 `;
 
 const SaveCard = (props) => {
-    const [currentArea, setCurrentArea] = useState('cover');
+  const [currentArea, setCurrentArea] = useState("cover");
 
-    // const handleSaveCard = () => {
-    //     saveDataUrl(props.cover, props.inner, props.text, props.cardId);
-    // };
+  // const handleSaveCard = () => {
+  //     saveDataUrl(props.cover, props.inner, props.text, props.cardId);
+  // };
 
-    // const handlePreview = () => {
-    //     navToPreviewCard(props.cardId);
-    // };
+  // const handlePreview = () => {
+  //     navToPreviewCard(props.cardId);
+  // };
 
-    // const handleNavToSendCard = () => {
-    //     navToSendCard(props.currentUser.email);
-    // };
+  // const handleNavToSendCard = () => {
+  //     navToSendCard(props.currentUser.email);
+  // };
 
-    const handleCanvasChange = (e) => {
-        if (e.target.dataset.canvas === 'inner') {
-            setCurrentArea('inner');
-            props.setCanvas(props.inner);
-        } else if (e.target.dataset.canvas === 'cover') {
-            setCurrentArea('cover');
-            props.setCanvas(props.cover);
-        } else if (e.target.dataset.canvas === 'text') {
-            setCurrentArea('text');
-            props.setCanvas(props.text);
-        }
-    };
+  const handleCanvasChange = (e) => {
+    if (e.target.dataset.canvas === "inner") {
+      setCurrentArea("inner");
+      props.setCanvas(props.inner);
+    } else if (e.target.dataset.canvas === "cover") {
+      setCurrentArea("cover");
+      props.setCanvas(props.cover);
+    } else if (e.target.dataset.canvas === "text") {
+      setCurrentArea("text");
+      props.setCanvas(props.text);
+    }
+  };
 
-    return (
-        <Container>
-            <ChangeCanvasContainer>
-                {currentArea === 'cover' ? (
-                    <ActiveCanvasBtn
-                        data-canvas="cover"
-                        onClick={handleCanvasChange}
-                    >
-                        封面
-                    </ActiveCanvasBtn>
-                ) : (
-                    <ChangeCanvasBtn
-                        data-canvas="cover"
-                        onClick={handleCanvasChange}
-                    >
-                        封面
-                    </ChangeCanvasBtn>
-                )}
-                {currentArea === 'inner' ? (
-                    <ActiveCanvasBtn
-                        data-canvas="inner"
-                        onClick={handleCanvasChange}
-                    >
-                        內頁
-                    </ActiveCanvasBtn>
-                ) : (
-                    <ChangeCanvasBtn
-                        data-canvas="inner"
-                        onClick={handleCanvasChange}
-                    >
-                        內頁
-                    </ChangeCanvasBtn>
-                )}
-                {currentArea === 'text' ? (
-                    <ActiveCanvasBtn
-                        data-canvas="text"
-                        onClick={handleCanvasChange}
-                    >
-                        文字頁
-                    </ActiveCanvasBtn>
-                ) : (
-                    <ChangeCanvasBtn
-                        data-canvas="text"
-                        onClick={handleCanvasChange}
-                    >
-                        文字頁
-                    </ChangeCanvasBtn>
-                )}
-            </ChangeCanvasContainer>
-            {/* <ActionContainer>
+  return (
+    <Container>
+      <ChangeCanvasContainer>
+        {currentArea === "cover" ? (
+          <ActiveCanvasBtn data-canvas="cover" onClick={handleCanvasChange}>
+            封面
+          </ActiveCanvasBtn>
+        ) : (
+          <ChangeCanvasBtn data-canvas="cover" onClick={handleCanvasChange}>
+            封面
+          </ChangeCanvasBtn>
+        )}
+        {currentArea === "inner" ? (
+          <ActiveCanvasBtn data-canvas="inner" onClick={handleCanvasChange}>
+            內頁
+          </ActiveCanvasBtn>
+        ) : (
+          <ChangeCanvasBtn data-canvas="inner" onClick={handleCanvasChange}>
+            內頁
+          </ChangeCanvasBtn>
+        )}
+        {currentArea === "text" ? (
+          <ActiveCanvasBtn data-canvas="text" onClick={handleCanvasChange}>
+            文字頁
+          </ActiveCanvasBtn>
+        ) : (
+          <ChangeCanvasBtn data-canvas="text" onClick={handleCanvasChange}>
+            文字頁
+          </ChangeCanvasBtn>
+        )}
+      </ChangeCanvasContainer>
+      {/* <ActionContainer>
                 <SaveBtn onClick={handleSaveCard}>儲存</SaveBtn>
                 <PreviewBtn onClick={handlePreview}>預覽</PreviewBtn>
                 <SendBtn onClick={handleNavToSendCard}>寄信</SendBtn>
             </ActionContainer> */}
-        </Container>
-    );
+    </Container>
+  );
 };
 
 export default SaveCard;

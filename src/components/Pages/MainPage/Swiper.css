@@ -1,55 +1,55 @@
 .swiper-button-prev {
-    top: 180px;
-    left: 10px;
-    color: black;
-    background-color: white;
-    background-image: url(../../../images/icons/left-arrow-icon.svg);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-size: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow: 0 0 5px black;
+  top: 180px;
+  left: 10px;
+  color: black;
+  background-color: white;
+  background-image: url(../../../images/icons/left-arrow-icon.svg);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 5px black;
 }
 
 .swiper-button-prev::after {
-    display: none;
+  display: none;
 }
 
 .swiper-button-prev:hover {
-    background-color: #172a2a;
-    background-image: url(../../../images/icons/left-arrow-icon-hover.svg);
+  background-color: #172a2a;
+  background-image: url(../../../images/icons/left-arrow-icon-hover.svg);
 }
 
 .swiper-button-next {
-    top: 180px;
-    right: 10px;
-    color: black;
-    background-color: white;
-    background-image: url(../../../images/icons/right-arrow-icon.svg);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-size: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow: 0 0 5px black;
+  top: 180px;
+  right: 10px;
+  color: black;
+  background-color: white;
+  background-image: url(../../../images/icons/right-arrow-icon.svg);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 5px black;
 }
 
 .swiper-button-next::after {
-    display: none;
+  display: none;
 }
 
 .swiper-button-next:hover {
-    background-color: #172a2a;
-    background-image: url(../../../images/icons/right-arrow-icon-hover.svg);
+  background-color: #172a2a;
+  background-image: url(../../../images/icons/right-arrow-icon-hover.svg);
 }
 
 .swiper-pagination-bullet {
-    color: gray;
+  color: gray;
 }
 
 .swiper-pagination-bullet-active {
-    background-color: #172f2f;
+  background-color: #172f2f;
 }

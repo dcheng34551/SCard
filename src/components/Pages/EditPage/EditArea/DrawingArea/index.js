@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 // import { fabric } from 'fabric';
-import 'fabric-history';
+import "fabric-history";
 
 const CanvasContainer = styled.div`
-    display: flex;
-    width: 100%;
-    gap: 20px;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 140px);
-    /* @media (max-width: 1600px) {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 140px);
+  /* @media (max-width: 1600px) {
         padding-top: 400px;
         flex-direction: column;
         overflow: auto;
@@ -36,72 +36,72 @@ const CanvasContainer = styled.div`
 // `;
 
 const DrawingArea = (props) => {
-    const [currentCanvas, setCurrentCanvas] = useState('c');
-    const [coverBorder, setCoverBorder] = useState({
-        color: 'gray',
-        width: '1px',
-    });
-    const [innerBorder, setInnerBorder] = useState({
-        color: 'gray',
-        width: '1px',
-    });
-    const [textBorder, setTextBorder] = useState({
-        color: 'gray',
-        width: '1px',
-    });
+  const [currentCanvas, setCurrentCanvas] = useState("c");
+  const [coverBorder, setCoverBorder] = useState({
+    color: "gray",
+    width: "1px",
+  });
+  const [innerBorder, setInnerBorder] = useState({
+    color: "gray",
+    width: "1px",
+  });
+  const [textBorder, setTextBorder] = useState({
+    color: "gray",
+    width: "1px",
+  });
 
-    useEffect(() => {
-        if (
-            JSON.stringify(props.canvas) !== '{}' &&
-            props.canvas.lowerCanvasEl.id === 'c'
-        ) {
-            setCurrentCanvas(props.canvas.lowerCanvasEl.id);
-            setCoverBorder({ color: '#172f2f', width: '2px' });
-            setInnerBorder({ color: '#ffffff', width: '1px' });
-            setTextBorder({ color: '#ffffff', width: '1px' });
-        } else if (
-            JSON.stringify(props.canvas) !== '{}' &&
-            props.canvas.lowerCanvasEl.id === 'i'
-        ) {
-            setCurrentCanvas(props.canvas.lowerCanvasEl.id);
-            setCoverBorder({ color: '#ffffff', width: '1px' });
-            setInnerBorder({ color: '#172f2f', width: '2px' });
-            setTextBorder({ color: '#ffffff', width: '1px' });
-        } else if (
-            JSON.stringify(props.canvas) !== '{}' &&
-            props.canvas.lowerCanvasEl.id === 't'
-        ) {
-            setCurrentCanvas(props.canvas.lowerCanvasEl.id);
-            setCoverBorder({ color: '#ffffff', width: '1px' });
-            setInnerBorder({ color: '#ffffff', width: '1px' });
-            setTextBorder({ color: '#172f2f', width: '2px' });
-        }
-    }, [props.canvas, currentCanvas]);
+  useEffect(() => {
+    if (
+      JSON.stringify(props.canvas) !== "{}" &&
+      props.canvas.lowerCanvasEl.id === "c"
+    ) {
+      setCurrentCanvas(props.canvas.lowerCanvasEl.id);
+      setCoverBorder({ color: "#172f2f", width: "2px" });
+      setInnerBorder({ color: "#ffffff", width: "1px" });
+      setTextBorder({ color: "#ffffff", width: "1px" });
+    } else if (
+      JSON.stringify(props.canvas) !== "{}" &&
+      props.canvas.lowerCanvasEl.id === "i"
+    ) {
+      setCurrentCanvas(props.canvas.lowerCanvasEl.id);
+      setCoverBorder({ color: "#ffffff", width: "1px" });
+      setInnerBorder({ color: "#172f2f", width: "2px" });
+      setTextBorder({ color: "#ffffff", width: "1px" });
+    } else if (
+      JSON.stringify(props.canvas) !== "{}" &&
+      props.canvas.lowerCanvasEl.id === "t"
+    ) {
+      setCurrentCanvas(props.canvas.lowerCanvasEl.id);
+      setCoverBorder({ color: "#ffffff", width: "1px" });
+      setInnerBorder({ color: "#ffffff", width: "1px" });
+      setTextBorder({ color: "#172f2f", width: "2px" });
+    }
+  }, [props.canvas, currentCanvas]);
 
-    return (
-        <CanvasContainer>
-            <canvas
-                style={{
-                    border: `${coverBorder.width} solid ${coverBorder.color}`,
-                    borderRadius: '5px',
-                }}
-                id="c"
-            />
-            <canvas
-                style={{
-                    border: `${innerBorder.width} solid ${innerBorder.color}`,
-                    borderRadius: '5px',
-                }}
-                id="i"
-            />
-            <canvas
-                style={{
-                    border: `${textBorder.width} solid ${textBorder.color}`,
-                    borderRadius: '5px',
-                }}
-                id="t"
-            />
-            {/* {currentCanvas === 'c' ? (
+  return (
+    <CanvasContainer>
+      <canvas
+        style={{
+          border: `${coverBorder.width} solid ${coverBorder.color}`,
+          borderRadius: "5px",
+        }}
+        id="c"
+      />
+      <canvas
+        style={{
+          border: `${innerBorder.width} solid ${innerBorder.color}`,
+          borderRadius: "5px",
+        }}
+        id="i"
+      />
+      <canvas
+        style={{
+          border: `${textBorder.width} solid ${textBorder.color}`,
+          borderRadius: "5px",
+        }}
+        id="t"
+      />
+      {/* {currentCanvas === 'c' ? (
                 <canvas
                     style={{
                         border: `1px solid ${coverBorder}`,
@@ -154,8 +154,8 @@ const DrawingArea = (props) => {
                     id="t"
                 />
             )} */}
-        </CanvasContainer>
-    );
+    </CanvasContainer>
+  );
 };
 
 export default DrawingArea;
