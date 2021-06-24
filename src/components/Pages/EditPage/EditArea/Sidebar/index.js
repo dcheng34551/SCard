@@ -211,10 +211,6 @@ const Sidebar = (props) => {
     },
   });
   const sidebarItems = [
-    // {
-    //     en: 'template',
-    //     ch: '範本',
-    // },
     {
       en: "text",
       ch: "文字",
