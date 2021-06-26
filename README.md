@@ -29,7 +29,7 @@ Password: test123
 
 ## Flow Chart
 
-<img src="./src/images/scard-flow-chart.JPG"/>
+<img src="./src/images/scard-flow-chart.jpg"/>
 
 ## Features
 
