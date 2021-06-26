@@ -492,7 +492,7 @@ const Sidebar = (props) => {
             ></SidebarUpload>
           </SidebarUploadLabel>
           <SidebarUploadedImagesContainer>
-            {uploadedImages.length > 0
+            {uploadedImages && uploadedImages.length > 0
               ? uploadedImages.map((img) => (
                   <UploadedImageContainer>
                     <UploadedImage
