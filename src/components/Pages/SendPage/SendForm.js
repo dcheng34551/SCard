@@ -222,9 +222,9 @@ const SubmitBtn = styled.input`
 
 const SendForm = (props) => {
   const [selectedCard, setSelectedCard] = useState("");
-  const [email, setEmail] = useState("dcheng123331@gmail.com");
-  const [recipient, setRecipient] = useState("收件的京岱");
-  const [sender, setSender] = useState("寄件的京岱");
+  const [email, setEmail] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [sender, setSender] = useState("");
   const [options, setOptions] = useState([]);
 
   const handleSendMail = (e) => {
@@ -249,7 +249,7 @@ const SendForm = (props) => {
   }, [props]);
 
   useEffect(() => {
-    if (options.length > 0) {
+    if (options && options.length > 0) {
       setSelectedCard(options[0].basicSetting.id);
     }
   }, [options]);
